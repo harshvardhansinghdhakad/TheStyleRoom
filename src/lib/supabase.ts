@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const rawSupabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -12,22 +12,55 @@ const rawSupabaseAnonKey =
   process.env.NEXT_PUBLIC_thestyleroom_ANON_KEY ||
   process.env.NEXT_PUBLIC_THESTYLEROOM_ANON_KEY;
 
-// Keep the client constructible during Next.js static prerendering.
-// Real Supabase credentials must still be supplied at runtime via NEXT_PUBLIC_*.
-export const isSupabaseConfigured = Boolean(
-  rawSupabaseUrl &&
-  rawSupabaseAnonKey &&
-  !rawSupabaseUrl.includes('placeholder')
-);
+// Check that we have a valid-looking URL (starts with https://) and a key
+function isValidUrl(url: string | undefined): url is string {
+  return Boolean(url && url.startsWith('https://') && !url.includes('placeholder'));
+}
+
+export const isSupabaseConfigured = isValidUrl(rawSupabaseUrl) && Boolean(rawSupabaseAnonKey);
 
 export function hasSupabaseEnv(): boolean {
   return isSupabaseConfigured;
 }
 
-const clientUrl = rawSupabaseUrl || 'https://placeholder.supabase.co';
-const clientKey = rawSupabaseAnonKey || 'placeholder-anon-key';
+// Only create the real client when credentials are valid.
+// During Next.js static prerendering (build), credentials may be missing —
+// createClient() would throw "Invalid supabaseUrl" so we defer creation.
+let _supabase: SupabaseClient | null = null;
 
-export const supabase = createClient(clientUrl, clientKey);
+function getSupabase(): SupabaseClient {
+  if (!_supabase && isSupabaseConfigured) {
+    _supabase = createClient(rawSupabaseUrl!, rawSupabaseAnonKey!);
+  }
+  return _supabase!;
+}
+
+// No-op stub used during build-time prerendering when Supabase is not configured.
+// Returns safe empty results for any chained method call.
+const noopHandler: ProxyHandler<object> = {
+  get(_target, _prop) {
+    // Return a function that returns another proxy (for chaining like supabase.from('x').select('*'))
+    // or a promise that resolves to empty data.
+    return (..._args: unknown[]) =>
+      new Proxy(
+        { data: null, error: null, count: null,
+          then: (resolve: (val: { data: null; error: null }) => void) => resolve({ data: null, error: null }),
+        },
+        noopHandler,
+      );
+  },
+};
+
+// Proxy object so all existing `supabase.from(...)`, `supabase.auth.*` calls keep working.
+export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
+  get(_target, prop) {
+    if (isSupabaseConfigured) {
+      return (getSupabase() as Record<string | symbol, unknown>)[prop];
+    }
+    // Build-time / unconfigured: return no-op chain
+    return noopHandler.get!({}, prop, {});
+  },
+});
 
 export type Product = {
   id: string;
