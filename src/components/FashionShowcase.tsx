@@ -4,14 +4,14 @@ import { ArrowUpRight, Globe2, Heart, Star } from 'lucide-react';
 type Props = { onCategory: (cat: 'new' | 'dresses' | 'tops') => void };
 
 const cards = [
-  { title: 'Jackets', kicker: 'EFFORTLESS STYLE', desc: 'Layer up in confidence', image: '/images/product-08.jpeg', cat: 'tops' as const },
-  { title: 'Pants', kicker: 'ALL-DAY COMFORT', desc: 'Made to move with you', image: '/images/product-13.jpeg', cat: 'tops' as const },
+  { title: 'Jackets', kicker: 'EFFORTLESS STYLE', desc: 'Layer up in confidence', image: '/images/category_jacket.jpg', cat: 'tops' as const },
+  { title: 'Pants', kicker: 'ALL-DAY COMFORT', desc: 'Made to move with you', image: '/images/category_pants.jpg', cat: 'tops' as const },
 ];
 const arrivals = [
-  { title: 'Jackets', image: '/images/product-08.jpeg' },
-  { title: 'Pants', image: '/images/product-13.jpeg' },
-  { title: 'Sunglasses', image: '/images/product-01.jpeg' },
-  { title: 'Footwear', image: '/images/product-14.jpeg' },
+  { title: 'Jackets', image: '/images/category_jacket.jpg' },
+  { title: 'Pants', image: '/images/category_pants.jpg' },
+  { title: 'Sunglasses', image: '/images/arrival_sunglasses.jpg' },
+  { title: 'Footwear', image: '/images/arrival_footwear.jpg' },
 ];
 
 export default function FashionShowcase({ onCategory }: Props) {
@@ -26,7 +26,7 @@ export default function FashionShowcase({ onCategory }: Props) {
     </section>
 
     <section className="arrival-banner">
-      <img src="/images/product-18.jpeg" alt="New arrivals"/><div className="arrival-wash"/>
+      <img src="/images/arrival_banner_model.jpg" alt="New arrivals"/><div className="arrival-wash"/>
       <div className="arrival-copy"><p>* NEW COLLECTION *</p><h2>Same Energy<br/><span>New Arrivals</span></h2><button onClick={() => onCategory('new')}>Discover Now <ArrowUpRight size={17}/></button></div>
     </section>
 

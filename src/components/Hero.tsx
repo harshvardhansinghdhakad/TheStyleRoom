@@ -13,14 +13,14 @@ export default function Hero({ onShopNow, onNewArrivals }: HeroProps) {
       </div>
       <div className="hero-card">
         <div className="hero-media">
-          <img src="/images/product-18.jpeg" alt="The Style Room new collection" />
+          <img src="/images/hero_model.jpg" alt="VYRA new collection" />
           <div className="hero-image-wash" />
           <div className="hero-orb" />
         </div>
         <div className="hero-nav">
-          <button className="brand-mark" onClick={onShopNow}>THE STYLE ROOM</button>
+          <button className="brand-mark" onClick={onShopNow}>VYRA</button>
           <nav className="hidden md:flex items-center gap-8">
-            <button>Women</button><button>Men</button><button onClick={onNewArrivals}>Collections</button><button>About</button><button>Journal</button>
+            <button>Women</button><button onClick={onNewArrivals}>Collections</button><button>About</button><button>Journal</button>
           </nav>
           <div className="hero-actions">
             <Search size={18}/>

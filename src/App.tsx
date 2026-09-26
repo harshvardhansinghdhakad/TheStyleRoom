@@ -8,7 +8,7 @@ import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
 import CartDrawer from '@/components/CartDrawer';
 import FashionShowcase from '@/components/FashionShowcase';
-import Contact from '@/components/Contact';
+
 import Footer from '@/components/Footer';
 import AdminPanel from '@/components/AdminPanel';
 
@@ -245,10 +245,7 @@ function App() {
 
         {/* Home-only sections */}
         {activeCategory === 'home' && !searchQuery && (
-          <>
-            <FashionShowcase onCategory={(cat) => handleCategoryChange(cat)} />
-            <Contact />
-          </>
+          <FashionShowcase onCategory={(cat) => handleCategoryChange(cat)} />
         )}
 
         <Footer
