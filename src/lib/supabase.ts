@@ -55,7 +55,7 @@ const noopHandler: ProxyHandler<object> = {
 export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
   get(_target, prop) {
     if (isSupabaseConfigured) {
-      return (getSupabase() as Record<string | symbol, unknown>)[prop];
+      return (getSupabase() as unknown as Record<string | symbol, unknown>)[prop];
     }
     // Build-time / unconfigured: return no-op chain
     return noopHandler.get!({}, prop, {});
