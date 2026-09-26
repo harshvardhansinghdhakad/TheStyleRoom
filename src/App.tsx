@@ -54,10 +54,12 @@ function App() {
   const [activeCategory, setActiveCategory] = useState<Category>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin');
+  // Read the hash only after hydration; `window` is unavailable during Next.js prerendering.
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const onHashChange = () => setIsAdmin(window.location.hash === '#admin');
+    onHashChange();
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
