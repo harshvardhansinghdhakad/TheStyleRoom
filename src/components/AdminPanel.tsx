@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { supabase, formatPrice, type Product, type Order, type Customer, type Setting } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, formatPrice, type Product, type Order, type Customer, type Setting } from '@/lib/supabase';
 import {
   LayoutDashboard,
   Package,
@@ -73,14 +73,19 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
   const [deleteConfirm, setDeleteConfirm] = useState<Product | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+    if (!isSupabaseConfigured) {
       setAuthChecking(false);
-    });
+      return;
+    }
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data?.session ?? null);
+      setAuthChecking(false);
+    }).catch(() => setAuthChecking(false));
+
     const { data: listener } = supabase.auth.onAuthStateChange((_event, sess) => {
       setSession(sess);
     });
-    return () => listener.subscription.unsubscribe();
+    return () => listener?.subscription?.unsubscribe();
   }, []);
 
   const fetchAll = useCallback(async () => {

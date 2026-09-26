@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, type Product } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, sampleProducts, type Product } from '@/lib/supabase';
 import { CartProvider } from '@/lib/cart';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
@@ -58,6 +58,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const onHashChange = () => setIsAdmin(window.location.hash === '#admin');
     onHashChange();
     window.addEventListener('hashchange', onHashChange);
@@ -65,13 +66,35 @@ function App() {
   }, []);
 
   const exitAdmin = () => {
-    window.location.hash = '';
+    if (typeof window !== 'undefined') {
+      window.location.hash = '';
+    }
     setIsAdmin(false);
   };
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
+
+    // If Supabase is not configured yet (e.g. at build time or before adding env vars)
+    if (!isSupabaseConfigured) {
+      let filtered = [...sampleProducts];
+      if (activeCategory === 'new') {
+        filtered = filtered.filter((p) => p.is_new);
+      } else if (activeCategory !== 'home') {
+        filtered = filtered.filter((p) => p.category === activeCategory);
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.trim().toLowerCase();
+        filtered = filtered.filter(
+          (p) => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q))
+        );
+      }
+      setProducts(filtered);
+      setLoading(false);
+      return;
+    }
+
     try {
       let query = supabase.from('products').select('*');
       if (activeCategory === 'new') {
