@@ -1,22 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+const rawSupabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  process.env.NEXT_PUBLIC_thestyleroom ||
+  process.env.NEXT_PUBLIC_thestyleroom_URL ||
+  process.env.NEXT_PUBLIC_THESTYLEROOM_URL;
+
+const rawSupabaseAnonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_thestyleroom_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_thestyleroom_ANON_KEY ||
+  process.env.NEXT_PUBLIC_THESTYLEROOM_ANON_KEY;
 
 // Keep the client constructible during Next.js static prerendering.
 // Real Supabase credentials must still be supplied at runtime via NEXT_PUBLIC_*.
 export const isSupabaseConfigured = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
+  rawSupabaseUrl &&
+  rawSupabaseAnonKey &&
+  !rawSupabaseUrl.includes('placeholder')
 );
 
 export function hasSupabaseEnv(): boolean {
   return isSupabaseConfigured;
 }
 
-const clientUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const clientKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+const clientUrl = rawSupabaseUrl || 'https://placeholder.supabase.co';
+const clientKey = rawSupabaseAnonKey || 'placeholder-anon-key';
 
 export const supabase = createClient(clientUrl, clientKey);
 
