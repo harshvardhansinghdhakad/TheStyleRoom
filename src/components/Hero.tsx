@@ -2,14 +2,18 @@
 import { ArrowRight, Mail, Menu, Search, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/lib/cart';
 
-type HeroProps = { onShopNow: () => void; onNewArrivals: () => void };
+type HeroProps = { 
+  onShopNow: () => void; 
+  onNewArrivals: () => void;
+  onNavigate: (cat: 'dresses' | 'tops' | 'about' | 'journal') => void;
+};
 
-export default function Hero({ onShopNow, onNewArrivals }: HeroProps) {
+export default function Hero({ onShopNow, onNewArrivals, onNavigate }: HeroProps) {
   const { totalItems, openCart } = useCart();
   return (
     <section className="fashion-shell pt-3 md:pt-5" aria-label="Hero banner">
       <div className="contact-pill-wrap">
-        <a href="#contact" className="contact-pill"><span className="contact-icon"><Mail size={17}/></span>CONTACT US</a>
+        <a href="mailto:support@thestyleroom.com" className="contact-pill"><span className="contact-icon"><Mail size={17}/></span>CONTACT US</a>
       </div>
       <div className="hero-card">
         <div className="hero-media">
@@ -20,7 +24,10 @@ export default function Hero({ onShopNow, onNewArrivals }: HeroProps) {
         <div className="hero-nav">
           <button className="brand-mark" onClick={onShopNow}>VYRA</button>
           <nav className="hidden md:flex items-center gap-8">
-            <button>Women</button><button onClick={onNewArrivals}>Collections</button><button>About</button><button>Journal</button>
+            <button onClick={() => onNavigate('dresses')}>Women</button>
+            <button onClick={() => onNavigate('tops')}>Collections</button>
+            <button onClick={() => onNavigate('about')}>About</button>
+            <button onClick={() => onNavigate('journal')}>Journal</button>
           </nav>
           <div className="hero-actions">
             <Search size={18}/>

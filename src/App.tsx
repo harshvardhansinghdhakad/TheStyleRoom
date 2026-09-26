@@ -12,38 +12,50 @@ import FashionShowcase from '@/components/FashionShowcase';
 import Footer from '@/components/Footer';
 import AdminPanel from '@/components/AdminPanel';
 
-type Category = 'home' | 'new' | 'dresses' | 'tops';
+type Category = 'home' | 'new' | 'dresses' | 'tops' | 'about' | 'journal';
 
 const categoryTitles: Record<Category, string> = {
   home: '',
   new: 'New Arrivals',
-  dresses: 'One Piece',
-  tops: 'Shirts & Tops',
+  dresses: 'Women',
+  tops: 'Collections',
+  about: 'About VYRA',
+  journal: 'Our Journal',
 };
 
 const categorySubtitles: Record<Category, string> = {
   home: '',
   new: 'Fresh styles just landed — discover the latest additions to our collection.',
-  dresses: 'From flowing maxis to sleek slips, find the perfect one-piece for every occasion.',
-  tops: 'Elevated shirts and tops to complete your look.',
+  dresses: 'From flowing maxis to sleek slips, find the perfect piece for every occasion.',
+  tops: 'Elevated collections and curated styles.',
+  about: 'The story behind the styles.',
+  journal: 'Fashion insights, trends, and beyond.',
 };
 
 const categoryMeta: Record<Category, { title: string; description: string }> = {
   home: {
-    title: "The Style Room — Women's Fashion Boutique | One Piece, Shirts & Tops",
-    description: "Shop the latest women's fashion at The Style Room. Discover curated one-piece dresses, stylish shirts, elegant tops, and new arrivals. Free shipping on orders over ₹5,000.",
+    title: "VYRA — Modern Fashion | The Style Room",
+    description: "Shop the latest fashion at VYRA. Discover curated styles, new arrivals. Free shipping on orders over ₹5,000.",
   },
   new: {
-    title: "New Arrivals — Latest Women's Fashion | The Style Room",
-    description: "Shop the newest women's fashion arrivals at The Style Room. Fresh one-piece dresses, shirts, and tops just landed. Stay ahead of the trend with our latest collection.",
+    title: "New Arrivals — Latest Fashion | VYRA",
+    description: "Shop the newest fashion arrivals at VYRA. Fresh pieces just landed. Stay ahead of the trend with our latest collection.",
   },
   dresses: {
-    title: "One Piece Dresses — Women's Fashion | The Style Room",
-    description: "Shop one-piece dresses at The Style Room. From flowing maxis to sleek slips, find the perfect one-piece for every occasion. Quality pieces for the modern woman.",
+    title: "Women's Fashion | VYRA",
+    description: "Shop women's fashion at VYRA. Quality pieces for the modern woman.",
   },
   tops: {
-    title: "Shirts & Tops — Women's Fashion | The Style Room",
-    description: "Shop elevated shirts and tops at The Style Room. Complete your look with our curated collection of stylish shirts, blouses, and tops for the modern woman.",
+    title: "Collections | VYRA",
+    description: "Shop curated collections at VYRA. Complete your look.",
+  },
+  about: {
+    title: "About Us | VYRA",
+    description: "Learn more about VYRA, our story, and our commitment to modern fashion.",
+  },
+  journal: {
+    title: "Journal | VYRA",
+    description: "Read the latest fashion insights, trends, and news on the VYRA Journal.",
   },
 };
 
@@ -161,6 +173,7 @@ function App() {
           <Hero
             onShopNow={() => handleCategoryChange('dresses')}
             onNewArrivals={() => handleCategoryChange('new')}
+            onNavigate={(cat) => handleCategoryChange(cat)}
           />
         )}
 
@@ -220,7 +233,7 @@ function App() {
             )}
 
             {/* Products grid */}
-            {!loading && !error && (
+            {!loading && !error && activeCategory !== 'about' && activeCategory !== 'journal' && (
               <>
                 {products.length === 0 ? (
                   <div className="text-center py-20">
@@ -239,6 +252,14 @@ function App() {
                   </div>
                 )}
               </>
+            )}
+
+            {/* Static Content for About/Journal */}
+            {(activeCategory === 'about' || activeCategory === 'journal') && (
+              <div className="text-center py-20 max-w-2xl mx-auto">
+                <h3 className="text-2xl font-serif mb-4">Coming Soon</h3>
+                <p className="text-charcoal-500">We are currently working on this section. Check back later for updates!</p>
+              </div>
             )}
           </div>
         </section>
