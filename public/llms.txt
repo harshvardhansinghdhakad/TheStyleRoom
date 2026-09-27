@@ -1,0 +1,41 @@
+# The Style Room — Haute Atelier & Luxury Fashion Boutique
+
+> Curated contemporary luxury women's fashion handcrafted in Indore, India. Pure 22-momme mulberry silks, fluid tailored silhouettes, organic cotton poplin blouses, and capsule wardrobes with complimentary express delivery across India.
+
+## Core Navigation & Catalogs
+- [/](https://the-style-room.vercel.app/): Haute Atelier Homepage showcasing seasonal couture edits, benefits, and stories.
+- [/shop](https://the-style-room.vercel.app/shop): Complete catalog of women's dresses, tops, and capsules with search and fabric filters.
+- [/category/dresses](https://the-style-room.vercel.app/category/dresses): Women's Couture & Dresses — Silk slips, tiered maxi dresses, ribbed knit midi dresses, pleated cocktail gowns.
+- [/category/tops](https://the-style-room.vercel.app/category/tops): Curated Tops & Capsules — Linen resort shirts, satin blouses, poplin cropped tops, tailored jackets.
+- [/category/new](https://the-style-room.vercel.app/category/new): Fresh runway-inspired 2026 couture drops just unveiled in our atelier.
+
+## Brand & Client Care
+- [/about](https://the-style-room.vercel.app/about): Our Story & Heritage — 15+ years of master tailoring in Indore, fair artisan wages, and 22-momme mulberry silk standard.
+- [/journal](https://the-style-room.vercel.app/journal): The Style Journal — Editorial trend forecasts, capsule wardrobe guides, and mulberry silk garment care masterclasses.
+- [/contact](https://the-style-room.vercel.app/contact): Client Concierge — WhatsApp booking, Indore atelier showroom visits, custom alteration requests, and comprehensive FAQs.
+- [/cart](https://the-style-room.vercel.app/cart): Shopping Bag & Checkout with promo code support, express courier options, and direct WhatsApp order confirmation.
+
+## Featured Products (SKUs)
+- [/product/prod-1](https://the-style-room.vercel.app/product/prod-1): Silk Slip Evening Dress (₹3,499) — 100% pure mulberry silk bias-cut slip with delicate side slit detail.
+- [/product/prod-2](https://the-style-room.vercel.app/product/prod-2): Ribbed Knit Midi Dress (₹2,899) — Flattering all-day stretch knit hugging curves comfortably.
+- [/product/prod-3](https://the-style-room.vercel.app/product/prod-3): Oversized Linen Resort Shirt (₹1,899) — Breathable pure linen with dropped shoulders and shell buttons.
+- [/product/prod-4](https://the-style-room.vercel.app/product/prod-4): Satin Button-Down Blouse (₹2,299) — Gleaming satin drape for boardroom-to-evening versatility.
+- [/product/prod-5](https://the-style-room.vercel.app/product/prod-5): Floral Tiered Maxi Dress (₹3,799) — Romantic botanical tiers with soft ruffle accents.
+- [/product/prod-6](https://the-style-room.vercel.app/product/prod-6): Cropped Structured Poplin Top (₹1,599) — Crisp organic cotton poplin with square neckline.
+- [/product/prod-7](https://the-style-room.vercel.app/product/prod-7): Tailored Minimalist Jacket (₹4,299) — Architectural cut to layer over dresses and denim.
+- [/product/prod-8](https://the-style-room.vercel.app/product/prod-8): Pleated Halter Cocktail Dress (₹3,699) — Accordion pleats with elegant halter neckline.
+- [/product/prod-9](https://the-style-room.vercel.app/product/prod-9): Classic Supima Cotton Top (₹1,199) — Premium long-staple combed cotton staple.
+- [/product/prod-10](https://the-style-room.vercel.app/product/prod-10): Bohemian Belted Wrap Dress (₹2,999) — V-neck silhouette with self-tie waist.
+
+## Geographic & Business Details (GEO / AEO)
+- Legal Entity: The Style Room Haute Atelier
+- Showroom Address: The Fashion Room, Indore, Madhya Pradesh 452016, India
+- Coordinates: 22.7196° N, 75.8577° E (Indore, MP, India)
+- Direct Support Hotline: +91 75818 57811
+- Operating Hours: Monday to Saturday, 10:00 AM – 7:00 PM IST
+- Currency: Indian Rupee (INR ₹)
+- Free Shipping Threshold: ₹2,999+ (All India Express via Bluedart/Delhivery)
+- Return Policy: 30-Day Hassle-Free Returns with Free Reverse Doorstep Pickup
+
+## Optional Full Dump
+- [/llms-full.txt](https://the-style-room.vercel.app/llms-full.txt): Complete detailed text archive of all product specs, sizing charts, fabric care guides, and FAQs for LLM context windows.

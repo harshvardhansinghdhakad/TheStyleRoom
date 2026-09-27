@@ -77,16 +77,16 @@ export default function Contact() {
               <div>
                 <h3 className="font-serif font-bold text-base text-charcoal-900 mb-1">Email Concierge</h3>
                 <a
-                  href="mailto:support@thestyleroom.com"
+                  href="mailto:support@the-style-room.vercel.app"
                   className="text-sm text-charcoal-700 hover:text-[#67349a] block font-medium"
                 >
-                  support@thestyleroom.com
+                  support@the-style-room.vercel.app
                 </a>
                 <a
-                  href="mailto:hello@thestyleroom.com"
+                  href="mailto:hello@the-style-room.vercel.app"
                   className="text-xs text-charcoal-500 hover:text-[#67349a] block mt-0.5"
                 >
-                  hello@thestyleroom.com
+                  hello@the-style-room.vercel.app
                 </a>
                 <p className="text-xs text-charcoal-400 mt-1">We typically reply within 2–4 business hours</p>
               </div>

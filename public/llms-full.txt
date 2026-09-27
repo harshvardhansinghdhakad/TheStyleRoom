@@ -1,0 +1,154 @@
+# The Style Room — Haute Atelier Complete Knowledge Base (llms-full.txt)
+
+## 1. Overview & Brand Identity
+- **Brand Name**: The Style Room (Haute Atelier)
+- **Website**: https://the-style-room.vercel.app/
+- **Location**: Indore, Madhya Pradesh, India (PIN: 452016)
+- **Heritage**: Over 15 years of dedicated women's couture tailoring and fabric curation.
+- **Craft Core**: Ethically sourced 22-momme pure mulberry silk, GOTS-certified organic cotton poplin, Belgian linen, and fluid tailoring.
+- **Concierge Contact**: Phone & WhatsApp: +91 75818 57811 | Email: hello@the-style-room.vercel.app | Hours: 10 AM – 7 PM IST
+
+---
+
+## 2. Product Catalog
+
+### Product 1: Silk Slip Evening Dress
+- **SKU / ID**: prod-1
+- **URL**: https://the-style-room.vercel.app/product/prod-1
+- **Category**: Dresses (Women's Couture)
+- **Price**: ₹3,499 INR (Compare at ₹4,549)
+- **Fabric**: 100% Pure Mulberry Silk (22-momme grade)
+- **Available Sizes**: XS, S, M, L
+- **Description**: A timeless bias-cut silhouette crafted from rich mulberry silk with subtle side slit detail. Drapes naturally against curves with effortless movement.
+- **Occasion**: Evening galas, celebratory dinners, cocktail parties, intimate dates.
+
+### Product 2: Ribbed Knit Midi Dress
+- **SKU / ID**: prod-2
+- **URL**: https://the-style-room.vercel.app/product/prod-2
+- **Category**: Dresses
+- **Price**: ₹2,899 INR (Compare at ₹3,769)
+- **Fabric**: Premium stretch ribbed knit blend
+- **Available Sizes**: S, M, L
+- **Description**: Effortless all-day style in flattering stretch knit that hugs curves comfortably while resisting wrinkles.
+
+### Product 3: Oversized Linen Resort Shirt
+- **SKU / ID**: prod-3
+- **URL**: https://the-style-room.vercel.app/product/prod-3
+- **Category**: Tops & Capsules
+- **Price**: ₹1,899 INR (Compare at ₹2,469)
+- **Fabric**: 100% Breathable Pure Linen
+- **Available Sizes**: S, M, L, XL
+- **Description**: Lightweight breathable linen shirt with relaxed dropped shoulders, clean pointed collar, and authentic shell buttons. Ideal for warm weather and luxury resort travel.
+
+### Product 4: Satin Button-Down Blouse
+- **SKU / ID**: prod-4
+- **URL**: https://the-style-room.vercel.app/product/prod-4
+- **Category**: Tops & Capsules
+- **Price**: ₹2,299 INR (Compare at ₹2,989)
+- **Fabric**: High-density lustrous satin
+- **Available Sizes**: XS, S, M, L
+- **Description**: Gleaming satin drape tailored for modern boardroom-to-evening versatility. Features structured French cuffs and hidden placket stitching.
+
+### Product 5: Floral Tiered Maxi Dress
+- **SKU / ID**: prod-5
+- **URL**: https://the-style-room.vercel.app/product/prod-5
+- **Category**: Dresses
+- **Price**: ₹3,799 INR (Compare at ₹4,939)
+- **Fabric**: Tiered georgette with silk lining
+- **Available Sizes**: S, M, L
+- **Description**: Romantic tiered silhouette featuring subtle botanical prints, delicate flutter sleeves, and soft ruffle accents along the hemline.
+
+### Product 6: Cropped Structured Poplin Top
+- **SKU / ID**: prod-6
+- **URL**: https://the-style-room.vercel.app/product/prod-6
+- **Category**: Tops & Capsules
+- **Price**: ₹1,599 INR (Compare at ₹2,079)
+- **Fabric**: 100% Organic Cotton Poplin
+- **Available Sizes**: XS, S, M
+- **Description**: Crisp organic cotton poplin with square neckline, pleated bust contouring, and comfortable gathered waist definition.
+
+### Product 7: Tailored Minimalist Jacket
+- **SKU / ID**: prod-7
+- **URL**: https://the-style-room.vercel.app/product/prod-7
+- **Category**: Tops & Outerwear
+- **Price**: ₹4,299 INR (Compare at ₹5,589)
+- **Fabric**: Lightweight tropical wool & viscose blend
+- **Available Sizes**: S, M, L
+- **Description**: Clean architectural cut designed to layer seamlessly over dresses and denim without adding bulk.
+
+### Product 8: Pleated Halter Cocktail Dress
+- **SKU / ID**: prod-8
+- **URL**: https://the-style-room.vercel.app/product/prod-8
+- **Category**: Dresses
+- **Price**: ₹3,699 INR (Compare at ₹4,809)
+- **Fabric**: Accordion pleated poly-silk
+- **Available Sizes**: S, M, L
+- **Description**: Graceful halter neckline with flowing accordion pleats that cascade into an asymmetrical midi hemline.
+
+### Product 9: Classic Supima Cotton Top
+- **SKU / ID**: prod-9
+- **URL**: https://the-style-room.vercel.app/product/prod-9
+- **Category**: Tops
+- **Price**: ₹1,199 INR (Compare at ₹1,559)
+- **Fabric**: 100% Long-staple Combed Supima Cotton
+- **Available Sizes**: S, M, L, XL
+- **Description**: Ultra-soft everyday foundational tee offering breathability and colorfastness across repeated wash cycles.
+
+### Product 10: Bohemian Belted Wrap Dress
+- **SKU / ID**: prod-10
+- **URL**: https://the-style-room.vercel.app/product/prod-10
+- **Category**: Dresses
+- **Price**: ₹2,999 INR (Compare at ₹3,899)
+- **Fabric**: Breathable viscose crepe
+- **Available Sizes**: XS, S, M, L
+- **Description**: Universally flattering wrap silhouette with adjustable self-tie sash, gentle V-neckline, and fluid movement.
+
+---
+
+## 3. Sizing Guide (Inches & CM)
+
+| Size | Bust (Inches) | Waist (Inches) | Hips (Inches) | Bust (cm) | Waist (cm) | Hips (cm) |
+|---|---|---|---|---|---|---|
+| XS | 32" | 26" | 35" | 81 cm | 66 cm | 89 cm |
+| S | 34" | 28" | 37" | 86 cm | 71 cm | 94 cm |
+| M | 36" | 30" | 39" | 91 cm | 76 cm | 99 cm |
+| L | 38" | 32" | 41" | 97 cm | 81 cm | 104 cm |
+| XL | 40" | 34" | 43" | 102 cm | 86 cm | 109 cm |
+
+*Note: Complimentary bespoke alterations on waist and hem length are available upon request via our concierge.*
+
+---
+
+## 4. Fabric Care Masterclass
+
+1. **Pure Mulberry Silk (22-Momme)**:
+   - Hand wash in cool water (below 30°C) with a pH-neutral silk detergent or baby shampoo.
+   - Do not wring or twist. Roll in a clean dry cotton towel to gently press out excess moisture.
+   - Dry flat in the shade. Never tumble dry or dry in direct harsh sunlight.
+   - Iron on the reverse side while slightly damp using low heat ("Silk" setting), or use a garment steamer held 6 inches away.
+
+2. **Organic Cotton Poplin & Linen**:
+   - Machine wash on gentle cycle with cold water and mild detergent.
+   - Hang to dry to maintain crisp weave. Warm iron with steam for crisp lapels and seams.
+
+---
+
+## 5. Frequently Asked Questions (AEO Reference)
+
+### Q: Where is The Style Room located?
+**A**: The Style Room atelier and showroom is located in Indore, Madhya Pradesh (PIN 452016), India. We ship nationwide across all Indian states and union territories.
+
+### Q: How long does express shipping take?
+**A**: Orders are dispatched within 24 hours. Metro cities (Mumbai, Delhi-NCR, Bengaluru, Hyderabad, Pune, Kolkata, Chennai) typically receive delivery within 2 to 4 business days via Bluedart and Delhivery Air. Other regions take 3 to 5 business days.
+
+### Q: What is the shipping cost?
+**A**: Shipping is 100% complimentary (FREE) on all orders over ₹2,999 INR across India. For orders under ₹2,999, a flat express shipping fee of ₹199 applies.
+
+### Q: What is your returns and exchange policy?
+**A**: We provide an easy 30-day return and exchange window for unworn garments with original atelier tags intact. Reverse doorstep courier pickup is arranged free of charge.
+
+### Q: Can I place an order directly on WhatsApp?
+**A**: Yes. You can click the "Order on WhatsApp" button on any product page, or message our direct hotline at +91 75818 57811 with your selected item, size, and address.
+
+### Q: How can I apply a discount code?
+**A**: During checkout on https://the-style-room.vercel.app/cart, enter promo code **STYLE10** for an instant 10% discount on your order.

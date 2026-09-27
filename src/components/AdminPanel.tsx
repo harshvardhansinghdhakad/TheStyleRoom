@@ -114,7 +114,7 @@ const defaultCustomers: Customer[] = [
 
 const defaultSettings: Setting[] = [
   { id: 'set-1', key: 'store_name', value: 'The Style Room' },
-  { id: 'set-2', key: 'support_email', value: 'support@thestyleroom.com' },
+  { id: 'set-2', key: 'support_email', value: 'support@the-style-room.vercel.app' },
   { id: 'set-3', key: 'support_phone', value: '+91 75818 57811' },
   { id: 'set-4', key: 'free_shipping_threshold', value: '2999' },
   { id: 'set-5', key: 'announcement_banner', value: 'COMPLIMENTARY EXPRESS SHIPPING ACROSS INDIA OVER ₹2,999' },
@@ -1075,7 +1075,7 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 bg-cream-50 border border-cream-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-[#67349a] focus:ring-2 focus:ring-[#67349a]/20 transition-all"
-                  placeholder="admin@thestyleroom.com"
+                  placeholder="admin@the-style-room.vercel.app"
                 />
               </div>
             </div>
