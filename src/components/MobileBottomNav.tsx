@@ -1,16 +1,18 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Sparkles, Layers, Search, ShoppingBag } from 'lucide-react';
+import { Home, Layers, Sparkles, ShoppingBag, User } from 'lucide-react';
 import { useCart } from '@/lib/cart';
+import { useAuth } from '@/lib/auth';
 
 type MobileBottomNavProps = {
   onOpenSearch?: () => void;
 };
 
-export default function MobileBottomNav({ onOpenSearch }: MobileBottomNavProps) {
+export default function MobileBottomNav({}: MobileBottomNavProps) {
   const pathname = usePathname();
   const { totalItems, openCart } = useCart();
+  const { user, openAccountDrawer, openAuthModal } = useAuth();
 
   const navItems = [
     { label: 'Home', href: '/', icon: Home, exact: true },
@@ -34,7 +36,7 @@ export default function MobileBottomNav({ onOpenSearch }: MobileBottomNavProps) 
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all ${
                 isActive ? 'text-[#67349a] font-bold scale-105' : 'text-charcoal-500 hover:text-charcoal-800'
               }`}
             >
@@ -44,20 +46,10 @@ export default function MobileBottomNav({ onOpenSearch }: MobileBottomNavProps) 
           );
         })}
 
-        {/* Search Trigger */}
-        <button
-          onClick={onOpenSearch}
-          className="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-charcoal-500 hover:text-[#67349a] transition-all"
-          aria-label="Search Catalog"
-        >
-          <Search size={19} className="stroke-[1.8]" />
-          <span className="text-[10px] tracking-wider mt-0.5">Search</span>
-        </button>
-
         {/* Bag Trigger */}
         <button
           onClick={openCart}
-          className="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-charcoal-500 hover:text-[#67349a] transition-all relative"
+          className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-charcoal-500 hover:text-[#67349a] transition-all relative"
           aria-label="Open Shopping Bag"
         >
           <div className="relative">
@@ -69,6 +61,24 @@ export default function MobileBottomNav({ onOpenSearch }: MobileBottomNavProps) 
             )}
           </div>
           <span className="text-[10px] tracking-wider mt-0.5">Bag</span>
+        </button>
+
+        {/* Account / Login Trigger */}
+        <button
+          onClick={() => (user ? openAccountDrawer() : openAuthModal('signin'))}
+          className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-charcoal-500 hover:text-[#67349a] transition-all"
+          aria-label="User Account and Addresses"
+        >
+          {user ? (
+            <div className="w-[19px] h-[19px] rounded-full bg-[#67349a] text-white flex items-center justify-center text-[9px] font-bold">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+          ) : (
+            <User size={19} className="stroke-[1.8]" />
+          )}
+          <span className="text-[10px] tracking-wider mt-0.5 truncate max-w-[46px]">
+            {user ? 'Account' : 'Sign In'}
+          </span>
         </button>
       </div>
     </nav>

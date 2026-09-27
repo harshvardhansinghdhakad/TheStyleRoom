@@ -2,13 +2,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, ShoppingBag, X, ArrowRight, Shield, Sparkles } from 'lucide-react';
+import { Search, ShoppingBag, X, ArrowRight, Shield, Sparkles, User as UserIcon } from 'lucide-react';
 import { useCart } from '@/lib/cart';
+import { useAuth } from '@/lib/auth';
 import SearchModal from '@/components/SearchModal';
+import AuthModal from '@/components/AuthModal';
+import AccountDrawer from '@/components/AccountDrawer';
 
 export default function Header() {
   const pathname = usePathname();
   const { totalItems, openCart } = useCart();
+  const { user, openAuthModal, openAccountDrawer } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -118,6 +122,31 @@ export default function Header() {
                 )}
               </button>
 
+              {/* User Account / Login Button */}
+              {user ? (
+                <button
+                  onClick={openAccountDrawer}
+                  className="flex items-center gap-1.5 py-1 px-2.5 sm:px-3 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-[#522580] transition-all text-xs font-semibold"
+                  title="My Atelier Account & Saved Addresses"
+                  aria-label="User Account"
+                >
+                  <div className="w-5 h-5 rounded-full bg-[#67349a] text-white flex items-center justify-center text-[10px] font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="hidden md:inline max-w-[80px] truncate">{user.name.split(' ')[0]}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => openAuthModal('signin')}
+                  className="flex items-center gap-1.5 py-1.5 px-3 rounded-full text-charcoal-700 hover:text-[#67349a] hover:bg-purple-50 transition-all text-xs font-semibold border border-cream-200"
+                  title="Sign In / Register"
+                  aria-label="Sign In"
+                >
+                  <UserIcon size={16} />
+                  <span className="hidden sm:inline">Sign In</span>
+                </button>
+              )}
+
               {/* Contact Us CTA Button */}
               <Link
                 href="/contact"
@@ -173,13 +202,45 @@ export default function Header() {
             })}
             
             <div className="pt-4 border-t border-cream-200 mt-3 space-y-2">
+              {user ? (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAccountDrawer();
+                  }}
+                  className="flex items-center justify-between w-full py-2.5 px-4 rounded-xl bg-purple-50 text-[#67349a] text-xs font-bold uppercase tracking-wider"
+                >
+                  <span className="flex items-center gap-2">
+                    <UserIcon size={14} />
+                    <span>My Account ({user.name.split(' ')[0]})</span>
+                  </span>
+                  <span className="text-[10px] text-purple-700 bg-white px-2 py-0.5 rounded-md">
+                    {user.addresses.length} Addresses
+                  </span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal('signin');
+                  }}
+                  className="flex items-center justify-between w-full py-2.5 px-4 rounded-xl bg-purple-50 text-[#67349a] text-xs font-bold uppercase tracking-wider"
+                >
+                  <span className="flex items-center gap-2">
+                    <UserIcon size={14} />
+                    <span>Sign In / Create Account</span>
+                  </span>
+                  <ArrowRight size={14} />
+                </button>
+              )}
+
               <Link
                 href="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between w-full py-2.5 px-4 rounded-xl bg-purple-50 text-[#67349a] text-xs font-bold uppercase tracking-wider"
+                className="flex items-center justify-between w-full py-2 px-4 rounded-xl text-charcoal-700 hover:bg-cream-100 text-xs font-semibold uppercase tracking-wider"
               >
                 <span>Client Concierge Support</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </Link>
 
               <Link
@@ -197,6 +258,12 @@ export default function Header() {
 
       {/* Global Interactive Search Modal */}
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
+      {/* Global Interactive Auth Modal */}
+      <AuthModal />
+
+      {/* Global User Account & Saved Addresses Drawer */}
+      <AccountDrawer />
     </>
   );
 }

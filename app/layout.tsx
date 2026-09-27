@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import '../src/index.css';
+import { AuthProvider } from '@/lib/auth';
 import { CartProvider } from '@/lib/cart';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -151,22 +152,24 @@ export default function RootLayout({
         <GoogleAnalytics />
       </head>
       <body className="min-h-screen flex flex-col bg-[#f7f5fb] text-[#171020] antialiased selection:bg-[#deb6ff] selection:text-[#241135]">
-        <CartProvider>
-          {/* Global Header */}
-          <Header />
+        <AuthProvider>
+          <CartProvider>
+            {/* Global Header */}
+            <Header />
 
-          {/* Main Page Content */}
-          <main className="flex-1 w-full pb-14 md:pb-0">{children}</main>
+            {/* Main Page Content */}
+            <main className="flex-1 w-full pb-14 md:pb-0">{children}</main>
 
-          {/* Global Footer */}
-          <Footer />
+            {/* Global Footer */}
+            <Footer />
 
-          {/* Global Slide-Over Cart Drawer */}
-          <CartDrawer />
+            {/* Global Slide-Over Cart Drawer */}
+            <CartDrawer />
 
-          {/* Mobile App Bottom Bar (Fixed) */}
-          <MobileBottomNav />
-        </CartProvider>
+            {/* Mobile App Bottom Bar (Fixed) */}
+            <MobileBottomNav />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

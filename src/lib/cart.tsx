@@ -8,6 +8,8 @@ export type CartItem = {
   quantity: number;
 };
 
+import { trackCartAdditionEvent } from './storeData';
+
 type CartContextValue = {
   items: CartItem[];
   isOpen: boolean;
@@ -61,6 +63,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const closeCart = useCallback(() => setIsOpen(false), []);
 
   const addItem = useCallback((product: Product, size: string) => {
+    trackCartAdditionEvent(product, size);
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id && item.size === size);
       if (existing) {

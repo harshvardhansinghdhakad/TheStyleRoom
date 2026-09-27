@@ -72,9 +72,21 @@ export const ARTICLES: Article[] = [
 ];
 
 export function getAllArticles(): Article[] {
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('thestyleroom_articles');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {}
+  }
   return ARTICLES;
 }
 
 export function getArticleById(id: string): Article | undefined {
-  return ARTICLES.find((a) => a.id === id);
+  const articles = getAllArticles();
+  return articles.find((a) => a.id === id);
 }

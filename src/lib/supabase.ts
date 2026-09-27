@@ -88,6 +88,8 @@ export type Order = {
   customer_id: string | null;
   customer_name: string;
   customer_email: string;
+  customer_phone?: string | null;
+  shipping_address?: string | Record<string, unknown> | null;
   items: OrderItem[];
   total: number;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
