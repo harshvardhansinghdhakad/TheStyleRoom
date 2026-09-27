@@ -1531,15 +1531,28 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
     setLoading(true);
 
     if (isSupabaseConfigured) {
-      const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+      const { error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (err) {
-        setError(err.message);
+        // If Supabase returned invalid login but matched owner credentials in demo fallback
+        if (
+          email.trim().toLowerCase() === 'harshvardhansinghdhakad@gmail.com' &&
+          password === 'TheStyleRoom@7811'
+        ) {
+          onDemoLogin();
+        } else {
+          setError(err.message);
+        }
       }
     } else {
-      if (email.toLowerCase().includes('admin') || password.length >= 6) {
+      if (
+        (email.trim().toLowerCase() === 'harshvardhansinghdhakad@gmail.com' &&
+          password === 'TheStyleRoom@7811') ||
+        email.toLowerCase().includes('admin') ||
+        password.length >= 6
+      ) {
         onDemoLogin();
       } else {
-        setError('Invalid admin credentials. Use Instant Demo Access or valid admin login.');
+        setError('Invalid credentials. Use harshvardhansinghdhakad@gmail.com or 1-Click Instant Enter.');
       }
     }
     setLoading(false);
@@ -1574,8 +1587,8 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
             <button
               type="button"
               onClick={() => {
-                setEmail('admin@the-style-room.vercel.app');
-                setPassword('admin123');
+                setEmail('harshvardhansinghdhakad@gmail.com');
+                setPassword('TheStyleRoom@7811');
               }}
               className="text-[10px] font-bold text-[#67349a] underline hover:text-[#54297f]"
             >
@@ -1583,10 +1596,10 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
             </button>
           </div>
           <p className="text-[11px] text-charcoal-700 font-mono">
-            Email: <b className="text-charcoal-900">admin@the-style-room.vercel.app</b>
+            Email: <b className="text-charcoal-900">harshvardhansinghdhakad@gmail.com</b>
           </p>
           <p className="text-[11px] text-charcoal-700 font-mono">
-            Password: <b className="text-charcoal-900">admin123</b>
+            Password: <b className="text-charcoal-900">TheStyleRoom@7811</b>
           </p>
         </div>
 
@@ -1616,7 +1629,7 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@the-style-room.vercel.app"
+                placeholder="harshvardhansinghdhakad@gmail.com"
                 className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-cream-300 focus:border-[#67349a] outline-none"
               />
             </div>

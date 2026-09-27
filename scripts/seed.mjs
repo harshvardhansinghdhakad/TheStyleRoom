@@ -23,11 +23,11 @@ async function run() {
   // 1. Seed Admin
   try {
     const { data, error } = await supabase.auth.signUp({
-      email: 'admin@the-style-room.vercel.app',
-      password: 'admin123',
+      email: 'harshvardhansinghdhakad@gmail.com',
+      password: 'TheStyleRoom@7811',
       options: {
         data: {
-          full_name: 'Atelier Store Administrator',
+          full_name: 'Harshvardhan Singh Dhakad (Store Owner)',
           is_admin: true,
         },
       },

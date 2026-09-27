@@ -1,20 +1,23 @@
 -- ==============================================================================
 -- THE STYLE ROOM — HAUTE ATELIER INDORE
 -- Supabase Database Seed Script (Admin User + Products + Articles + Settings + Orders)
--- Run this in Supabase SQL Editor after running schema.sql
+-- Run this in Supabase SQL Editor:
+-- https://supabase.com/dashboard/project/_/sql
 -- ==============================================================================
 
 -- Enable pgcrypto for password hashing
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- 1. SEED ADMIN USER IN SUPABASE AUTH (auth.users)
--- Email: admin@the-style-room.vercel.app
--- Password: admin123
+-- ------------------------------------------------------------------------------
+-- 1. SEED SUPER ADMIN USER IN SUPABASE AUTH (auth.users)
+-- Email: harshvardhansinghdhakad@gmail.com
+-- Password: TheStyleRoom@7811
+-- ------------------------------------------------------------------------------
 DO $$
 DECLARE
   admin_uid UUID := 'a0000000-0000-0000-0000-000000000001';
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'admin@the-style-room.vercel.app') THEN
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'harshvardhansinghdhakad@gmail.com') THEN
     INSERT INTO auth.users (
       instance_id,
       id,
@@ -38,13 +41,13 @@ BEGIN
       admin_uid,
       'authenticated',
       'authenticated',
-      'admin@the-style-room.vercel.app',
-      crypt('admin123', gen_salt('bf')),
+      'harshvardhansinghdhakad@gmail.com',
+      crypt('TheStyleRoom@7811', gen_salt('bf')),
       NOW(),
       NOW(),
       NOW(),
       '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb,
-      '{"full_name":"Atelier Store Administrator","phone":"+91 75818 57811","is_admin":true}'::jsonb,
+      '{"full_name":"Harshvardhan Singh Dhakad (Store Owner)","phone":"+91 75818 57811","is_admin":true}'::jsonb,
       NOW(),
       NOW(),
       '',
@@ -65,21 +68,33 @@ BEGIN
     ) VALUES (
       gen_random_uuid(),
       admin_uid,
-      format('{"sub":"%s","email":"%s"}', admin_uid, 'admin@the-style-room.vercel.app')::jsonb,
+      format('{"sub":"%s","email":"%s"}', admin_uid, 'harshvardhansinghdhakad@gmail.com')::jsonb,
       'email',
       NOW(),
       NOW(),
       NOW()
     );
+  ELSE
+    -- If already exists, update password and metadata to ensure correct credentials
+    UPDATE auth.users
+    SET
+      encrypted_password = crypt('TheStyleRoom@7811', gen_salt('bf')),
+      raw_user_meta_data = '{"full_name":"Harshvardhan Singh Dhakad (Store Owner)","phone":"+91 75818 57811","is_admin":true}'::jsonb,
+      raw_app_meta_data = '{"provider":"email","providers":["email"],"role":"admin"}'::jsonb,
+      email_confirmed_at = NOW(),
+      updated_at = NOW()
+    WHERE email = 'harshvardhansinghdhakad@gmail.com';
   END IF;
 END $$;
 
+-- ------------------------------------------------------------------------------
 -- 2. SEED ADMIN IN CUSTOMERS TABLE
+-- ------------------------------------------------------------------------------
 INSERT INTO public.customers (id, name, email, phone, addresses, orders_count, total_spent, last_login, created_at)
 VALUES (
   'a0000000-0000-0000-0000-000000000001',
-  'Atelier Administrator',
-  'admin@the-style-room.vercel.app',
+  'Harshvardhan Singh Dhakad (Store Owner)',
+  'harshvardhansinghdhakad@gmail.com',
   '+91 75818 57811',
   '[]'::jsonb,
   0,
@@ -87,9 +102,11 @@ VALUES (
   NOW(),
   NOW()
 )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  phone = EXCLUDED.phone;
 
--- Also seed demo customers
+-- Also seed demo client customers
 INSERT INTO public.customers (id, name, email, phone, addresses, orders_count, total_spent, last_login, created_at)
 VALUES
   ('cust-1', 'Ananya Singhania', 'ananya.s@gmail.com', '+91 98201 12345', '[{"id":"addr-1","label":"Home","isDefault":true,"fullName":"Ananya Singhania","phone":"+91 98201 12345","pincode":"452001","addressLine1":"Flat 402, Royal Palms Residency","addressLine2":"Race Course Road","city":"Indore","state":"Madhya Pradesh"}]'::jsonb, 2, 8697, NOW(), NOW() - INTERVAL '15 days'),
@@ -98,7 +115,9 @@ VALUES
   ('cust-4', 'Tanvi Verma', 'tanvi.v@gmail.com', '+91 98765 89123', '[]'::jsonb, 1, 3799, NOW(), NOW() - INTERVAL '5 days')
 ON CONFLICT (id) DO NOTHING;
 
+-- ------------------------------------------------------------------------------
 -- 3. SEED PRODUCTS
+-- ------------------------------------------------------------------------------
 INSERT INTO public.products (id, name, description, price, category, image_url, sizes, is_new, stock, created_at)
 VALUES
   ('prod-1', 'Silk Slip Evening Dress', 'A timeless silhouette crafted from rich 22-momme mulberry silk with subtle side slit detail.', 3499, 'dresses', '/images/product-02.jpeg', ARRAY['XS', 'S', 'M', 'L'], true, 12, NOW() - INTERVAL '20 days'),
@@ -117,7 +136,9 @@ ON CONFLICT (id) DO UPDATE SET
   stock = EXCLUDED.stock,
   image_url = EXCLUDED.image_url;
 
+-- ------------------------------------------------------------------------------
 -- 4. SEED EDITORIAL ARTICLES / BLOG
+-- ------------------------------------------------------------------------------
 INSERT INTO public.articles (id, title, category, read_time, date, author, image, excerpt, meta_description, content, created_at)
 VALUES
   (
@@ -164,7 +185,9 @@ ON CONFLICT (id) DO UPDATE SET
   excerpt = EXCLUDED.excerpt,
   content = EXCLUDED.content;
 
+-- ------------------------------------------------------------------------------
 -- 5. SEED ORDERS
+-- ------------------------------------------------------------------------------
 INSERT INTO public.orders (id, customer_id, customer_name, customer_email, customer_phone, shipping_address, items, subtotal, discount, shipping, total, status, created_at)
 VALUES
   (
@@ -229,7 +252,9 @@ VALUES
   )
 ON CONFLICT (id) DO NOTHING;
 
+-- ------------------------------------------------------------------------------
 -- 6. SEED STORE SETTINGS
+-- ------------------------------------------------------------------------------
 INSERT INTO public.settings (id, key, value)
 VALUES
   ('set-1', 'store_name', 'The Style Room'),
