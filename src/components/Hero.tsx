@@ -39,7 +39,7 @@ export default function Hero({ onShopNow, onNewArrivals }: HeroProps) {
           <p className="eyebrow text-xs md:text-sm tracking-[0.3em] font-semibold text-[#ddb7ff] mb-3 uppercase">
             Curated Contemporary Fashion
           </p>
-          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold leading-[1.02] tracking-tight mb-4">
+          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight mb-4">
             Curated Elegance,<br />
             <span className="text-[#deb6ff] italic font-normal">Uncompromising</span> Style.
           </h1>
