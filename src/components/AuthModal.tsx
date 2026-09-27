@@ -68,17 +68,6 @@ export default function AuthModal() {
     }
   };
 
-  const handleDemoSignIn = async () => {
-    setLoading(true);
-    setError(null);
-    await signIn('ananya.s@gmail.com', 'password123');
-    setSuccess('Signed in as Ananya Singhania (Demo Client)!');
-    setTimeout(() => {
-      setLoading(false);
-      closeAuthModal();
-    }, 600);
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#140820]/70 backdrop-blur-md animate-fade-in">
       <div
@@ -295,17 +284,9 @@ export default function AuthModal() {
             </button>
           </form>
 
-          {/* Quick Demo Login Option */}
-          <div className="mt-4 pt-3 border-t border-cream-200 text-center">
-            <button
-              type="button"
-              onClick={handleDemoSignIn}
-              className="text-[11px] text-[#67349a] font-semibold hover:underline inline-flex items-center gap-1"
-            >
-              <Sparkles size={12} />
-              <span>Instant Demo Sign In (Ananya Singhania)</span>
-            </button>
-          </div>
+          <p className="mt-4 pt-3 border-t border-cream-200 text-center text-[10px] text-charcoal-400">
+            Secure 256-bit SSL encrypted atelier authentication
+          </p>
         </div>
       </div>
     </div>

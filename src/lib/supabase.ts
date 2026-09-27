@@ -1,64 +1,31 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-const rawSupabaseUrl =
+export const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
   process.env.NEXT_PUBLIC_thestyleroom ||
   process.env.NEXT_PUBLIC_thestyleroom_URL ||
-  process.env.NEXT_PUBLIC_THESTYLEROOM_URL;
+  process.env.NEXT_PUBLIC_THESTYLEROOM_URL ||
+  'https://vfuvjtnxoqgfxtssxeec.supabase.co';
 
-const rawSupabaseAnonKey =
+export const SUPABASE_ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.NEXT_PUBLIC_thestyleroom_SUPABASE_ANON_KEY ||
   process.env.NEXT_PUBLIC_thestyleroom_ANON_KEY ||
-  process.env.NEXT_PUBLIC_THESTYLEROOM_ANON_KEY;
+  process.env.NEXT_PUBLIC_THESTYLEROOM_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmdXZqdG54b3FnZnh0c3N4ZWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MzM1OTgsImV4cCI6MjEwNjAwOTU5OH0.dLRJZuTv9zI28iO_IcCbO_LxrECbPA0ZBj1D4QaDMJU';
 
-// Check that we have a valid-looking URL (starts with https://) and a key
-function isValidUrl(url: string | undefined): url is string {
-  return Boolean(url && url.startsWith('https://') && !url.includes('placeholder'));
-}
-
-export const isSupabaseConfigured = isValidUrl(rawSupabaseUrl) && Boolean(rawSupabaseAnonKey);
+export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL.startsWith('https://'));
 
 export function hasSupabaseEnv(): boolean {
   return isSupabaseConfigured;
 }
 
-// Only create the real client when credentials are valid.
-// During Next.js static prerendering (build), credentials may be missing —
-// createClient() would throw "Invalid supabaseUrl" so we defer creation.
-let _supabase: SupabaseClient | null = null;
-
-function getSupabase(): SupabaseClient {
-  if (!_supabase && isSupabaseConfigured) {
-    _supabase = createClient(rawSupabaseUrl!, rawSupabaseAnonKey!);
-  }
-  return _supabase!;
-}
-
-// No-op stub used during build-time prerendering when Supabase is not configured.
-// Returns safe empty results for any chained method call.
-const noopHandler: ProxyHandler<object> = {
-  get(_target, _prop) {
-    // Return a function that returns another proxy (for chaining like supabase.from('x').select('*'))
-    // or a promise that resolves to empty data.
-    return (..._args: unknown[]) =>
-      new Proxy(
-        { data: null, error: null, count: null,
-          then: (resolve: (val: { data: null; error: null }) => void) => resolve({ data: null, error: null }),
-        },
-        noopHandler,
-      );
-  },
-};
-
-// Proxy object so all existing `supabase.from(...)`, `supabase.auth.*` calls keep working.
-export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
-  get(_target, prop) {
-    if (isSupabaseConfigured) {
-      return (getSupabase() as unknown as Record<string | symbol, unknown>)[prop];
-    }
-    // Build-time / unconfigured: return no-op chain
-    return noopHandler.get!({}, prop, {});
+// Create persistent Supabase client with auth session persistence
+export const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
   },
 });
 

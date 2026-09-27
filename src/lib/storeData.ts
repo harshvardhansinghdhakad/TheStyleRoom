@@ -140,11 +140,36 @@ function setLocal<T>(key: string, val: T): void {
 }
 
 // --- PRODUCTS ---
+export async function fetchLiveProducts(): Promise<Product[]> {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data && data.length > 0) {
+      setLocal(PRODUCTS_KEY, data);
+      return data;
+    }
+  } catch (err) {
+    console.warn('Error fetching live products from Supabase:', err);
+  }
+  return getStoredProducts();
+}
+
 export function getStoredProducts(): Product[] {
   return getLocal<Product[]>(PRODUCTS_KEY, sampleProducts);
 }
 
 export async function saveProductToStore(product: Product): Promise<Product[]> {
+  try {
+    const { error } = await supabase.from('products').upsert(product);
+    if (error) {
+      console.error('Supabase product upsert error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase product upsert network error:', err);
+  }
+
   const current = getStoredProducts();
   const existingIdx = current.findIndex((p) => p.id === product.id);
   let updated: Product[];
@@ -155,38 +180,79 @@ export async function saveProductToStore(product: Product): Promise<Product[]> {
     updated = [product, ...current];
   }
   setLocal(PRODUCTS_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('products').upsert(product);
-    } catch (err) {
-      console.warn('Supabase product upsert fallback to local:', err);
-    }
-  }
   return updated;
 }
 
 export async function deleteProductFromStore(productId: string): Promise<Product[]> {
+  try {
+    const { error } = await supabase.from('products').delete().eq('id', productId);
+    if (error) {
+      console.error('Supabase product delete error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase product delete network error:', err);
+  }
+
   const current = getStoredProducts();
   const updated = current.filter((p) => p.id !== productId);
   setLocal(PRODUCTS_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('products').delete().eq('id', productId);
-    } catch (err) {
-      console.warn('Supabase product delete error:', err);
-    }
-  }
   return updated;
 }
 
 // --- ARTICLES / BLOG ---
+export async function fetchLiveArticles(): Promise<Article[]> {
+  try {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data && data.length > 0) {
+      const mapped: Article[] = data.map((d: any) => ({
+        id: d.id,
+        title: d.title,
+        category: d.category,
+        readTime: d.read_time || '4 min read',
+        date: d.date,
+        author: d.author,
+        image: d.image,
+        excerpt: d.excerpt,
+        metaDescription: d.meta_description || d.excerpt || '',
+        content: Array.isArray(d.content) ? d.content : [],
+      }));
+      setLocal(ARTICLES_KEY, mapped);
+      return mapped;
+    }
+  } catch (err) {
+    console.warn('Error fetching live articles from Supabase:', err);
+  }
+  return getStoredArticles();
+}
+
 export function getStoredArticles(): Article[] {
   return getLocal<Article[]>(ARTICLES_KEY, ARTICLES);
 }
 
 export async function saveArticleToStore(article: Article): Promise<Article[]> {
+  try {
+    const dbPayload = {
+      id: article.id,
+      title: article.title,
+      category: article.category,
+      read_time: article.readTime,
+      date: article.date,
+      author: article.author,
+      image: article.image,
+      excerpt: article.excerpt,
+      content: article.content,
+    };
+    const { error } = await supabase.from('articles').upsert(dbPayload);
+    if (error) {
+      console.error('Supabase article upsert error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase article upsert network error:', err);
+  }
+
   const current = getStoredArticles();
   const existingIdx = current.findIndex((a) => a.id === article.id);
   let updated: Article[];
@@ -197,73 +263,109 @@ export async function saveArticleToStore(article: Article): Promise<Article[]> {
     updated = [article, ...current];
   }
   setLocal(ARTICLES_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('articles').upsert(article);
-    } catch (err) {
-      console.warn('Supabase article upsert error:', err);
-    }
-  }
   return updated;
 }
 
 export async function deleteArticleFromStore(articleId: string): Promise<Article[]> {
+  try {
+    const { error } = await supabase.from('articles').delete().eq('id', articleId);
+    if (error) {
+      console.error('Supabase article delete error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase article delete network error:', err);
+  }
+
   const current = getStoredArticles();
   const updated = current.filter((a) => a.id !== articleId);
   setLocal(ARTICLES_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('articles').delete().eq('id', articleId);
-    } catch (err) {
-      console.warn('Supabase article delete error:', err);
-    }
-  }
   return updated;
 }
 
 // --- ORDERS ---
+export async function fetchLiveOrders(): Promise<Order[]> {
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data && data.length > 0) {
+      setLocal(ORDERS_KEY, data);
+      return data;
+    }
+  } catch (err) {
+    console.warn('Error fetching live orders from Supabase:', err);
+  }
+  return getStoredOrders();
+}
+
 export function getStoredOrders(): Order[] {
   return getLocal<Order[]>(ORDERS_KEY, initialOrders);
 }
 
 export async function saveOrderToStore(order: Order): Promise<Order[]> {
+  try {
+    const { error } = await supabase.from('orders').insert(order);
+    if (error) {
+      console.error('Supabase order insert error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase order insert network error:', err);
+  }
+
   const current = getStoredOrders();
   const updated = [order, ...current];
   setLocal(ORDERS_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('orders').insert(order);
-    } catch (err) {
-      console.warn('Supabase order insert error:', err);
-    }
-  }
   return updated;
 }
 
 export async function updateOrderStatusInStore(orderId: string, status: Order['status']): Promise<Order[]> {
+  try {
+    const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
+    if (error) {
+      console.error('Supabase order update error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase order status update network error:', err);
+  }
+
   const current = getStoredOrders();
   const updated = current.map((ord) => (ord.id === orderId ? { ...ord, status } : ord));
   setLocal(ORDERS_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('orders').update({ status }).eq('id', orderId);
-    } catch (err) {
-      console.warn('Supabase order status update error:', err);
-    }
-  }
   return updated;
 }
 
 // --- CUSTOMERS / SIGNUPS ---
+export async function fetchLiveCustomers(): Promise<Customer[]> {
+  try {
+    const { data, error } = await supabase
+      .from('customers')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error && data && data.length > 0) {
+      setLocal(CUSTOMERS_KEY, data);
+      return data;
+    }
+  } catch (err) {
+    console.warn('Error fetching live customers from Supabase:', err);
+  }
+  return getStoredCustomers();
+}
+
 export function getStoredCustomers(): Customer[] {
   return getLocal<Customer[]>(CUSTOMERS_KEY, initialCustomers);
 }
 
 export async function recordNewCustomer(customer: Customer): Promise<Customer[]> {
+  try {
+    const { error } = await supabase.from('customers').upsert(customer);
+    if (error) {
+      console.error('Supabase customer upsert error:', error.message);
+    }
+  } catch (err) {
+    console.warn('Supabase customer upsert network error:', err);
+  }
+
   const current = getStoredCustomers();
   const existingIdx = current.findIndex((c) => c.email.toLowerCase() === customer.email.toLowerCase());
   let updated: Customer[];
@@ -274,18 +376,50 @@ export async function recordNewCustomer(customer: Customer): Promise<Customer[]>
     updated = [customer, ...current];
   }
   setLocal(CUSTOMERS_KEY, updated);
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('customers').upsert(customer);
-    } catch (err) {
-      console.warn('Supabase customer upsert error:', err);
-    }
-  }
   return updated;
 }
 
 // --- ANALYTICS (Cart Additions, Logins) ---
+export async function fetchLiveAnalytics(): Promise<StoreAnalytics> {
+  let cartCount = 0;
+  let recentEvents: CartAnalyticsEvent[] = [];
+  let loginCount = 0;
+  let lastLogin: string | null = null;
+
+  try {
+    const { data: events } = await supabase
+      .from('analytics_events')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (events && events.length > 0) {
+      const cartEvts = events.filter((e: any) => e.event_type === 'cart_add');
+      const loginEvts = events.filter((e: any) => e.event_type === 'user_login');
+      cartCount = cartEvts.length;
+      loginCount = loginEvts.length;
+      lastLogin = loginEvts[0]?.created_at || null;
+      recentEvents = cartEvts.slice(0, 15).map((e: any) => ({
+        productId: e.metadata?.product_id || '',
+        productName: e.metadata?.product_name || 'Atelier Item',
+        price: Number(e.metadata?.price) || 0,
+        size: e.metadata?.size || 'M',
+        timestamp: e.created_at,
+      }));
+    }
+  } catch (err) {
+    console.warn('Error fetching analytics events from Supabase:', err);
+  }
+
+  const cached = getStoreAnalytics();
+  return {
+    totalCartAdditions: Math.max(cartCount, cached.totalCartAdditions),
+    recentCartEvents: recentEvents.length > 0 ? recentEvents : cached.recentCartEvents,
+    totalLogins: Math.max(loginCount, cached.totalLogins),
+    lastLoginAt: lastLogin || cached.lastLoginAt,
+  };
+}
+
 export function getStoreAnalytics(): StoreAnalytics {
   return getLocal<StoreAnalytics>(ANALYTICS_KEY, {
     totalCartAdditions: 18,
@@ -318,7 +452,6 @@ export function getStoreAnalytics(): StoreAnalytics {
 }
 
 export function trackCartAdditionEvent(product: Product, size: string): void {
-  const current = getStoreAnalytics();
   const newEvent: CartAnalyticsEvent = {
     productId: product.id,
     productName: product.name,
@@ -327,12 +460,30 @@ export function trackCartAdditionEvent(product: Product, size: string): void {
     timestamp: new Date().toISOString(),
   };
 
+  const current = getStoreAnalytics();
   const updated: StoreAnalytics = {
     ...current,
     totalCartAdditions: current.totalCartAdditions + 1,
     recentCartEvents: [newEvent, ...current.recentCartEvents.slice(0, 19)],
   };
   setLocal(ANALYTICS_KEY, updated);
+
+  // Send real-time event to Supabase in background
+  (async () => {
+    try {
+      await supabase.from('analytics_events').insert({
+        event_type: 'cart_add',
+        metadata: {
+          product_id: product.id,
+          product_name: product.name,
+          price: product.price,
+          size,
+        },
+      });
+    } catch (err) {
+      console.warn('Analytics event insert failed:', err);
+    }
+  })();
 }
 
 export function trackUserLoginEvent(): void {
@@ -343,21 +494,50 @@ export function trackUserLoginEvent(): void {
     lastLoginAt: new Date().toISOString(),
   };
   setLocal(ANALYTICS_KEY, updated);
+
+  // Send real-time event to Supabase in background
+  (async () => {
+    try {
+      await supabase.from('analytics_events').insert({
+        event_type: 'user_login',
+        metadata: {
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (err) {
+      console.warn('Login event insert failed:', err);
+    }
+  })();
 }
 
 // --- SETTINGS ---
+export async function fetchLiveSettings(): Promise<Setting[]> {
+  try {
+    const { data, error } = await supabase.from('settings').select('*');
+    if (!error && data && data.length > 0) {
+      setLocal(SETTINGS_KEY, data);
+      return data;
+    }
+  } catch (err) {
+    console.warn('Error fetching live settings from Supabase:', err);
+  }
+  return getStoredSettings();
+}
+
 export function getStoredSettings(): Setting[] {
   return getLocal<Setting[]>(SETTINGS_KEY, initialSettings);
 }
 
 export async function saveSettingsToStore(settings: Setting[]): Promise<Setting[]> {
-  setLocal(SETTINGS_KEY, settings);
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('settings').upsert(settings);
-    } catch (err) {
-      console.warn('Supabase settings upsert error:', err);
+  try {
+    const { error } = await supabase.from('settings').upsert(settings);
+    if (error) {
+      console.error('Supabase settings upsert error:', error.message);
     }
+  } catch (err) {
+    console.warn('Supabase settings upsert network error:', err);
   }
+  setLocal(SETTINGS_KEY, settings);
   return settings;
 }
+

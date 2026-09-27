@@ -4,17 +4,17 @@ import type { Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured, formatPrice, type Product, type Order, type Customer, type Setting } from '@/lib/supabase';
 import type { Article } from '@/lib/articles';
 import {
-  getStoredProducts,
+  fetchLiveProducts,
   saveProductToStore,
   deleteProductFromStore,
-  getStoredArticles,
+  fetchLiveArticles,
   saveArticleToStore,
   deleteArticleFromStore,
-  getStoredOrders,
+  fetchLiveOrders,
   updateOrderStatusInStore,
-  getStoredCustomers,
-  getStoreAnalytics,
-  getStoredSettings,
+  fetchLiveCustomers,
+  fetchLiveAnalytics,
+  fetchLiveSettings,
   saveSettingsToStore,
   type StoreAnalytics,
 } from '@/lib/storeData';
@@ -105,7 +105,6 @@ const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Free Size'];
 
 export default function AdminPanel({ onExit }: { onExit: () => void }) {
   const [session, setSession] = useState<Session | null>(null);
-  const [demoMode, setDemoMode] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
   const [section, setSection] = useState<Section>('dashboard');
 
@@ -170,16 +169,19 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
     return () => listener?.subscription?.unsubscribe();
   }, []);
 
-  // Load all data
-  const refreshAllData = useCallback(() => {
+  // Load all data live from Supabase cloud database
+  const refreshAllData = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const p = getStoredProducts();
-      const a = getStoredArticles();
-      const o = getStoredOrders();
-      const c = getStoredCustomers();
-      const an = getStoreAnalytics();
-      const s = getStoredSettings();
+      const [p, a, o, c, an, s] = await Promise.all([
+        fetchLiveProducts(),
+        fetchLiveArticles(),
+        fetchLiveOrders(),
+        fetchLiveCustomers(),
+        fetchLiveAnalytics(),
+        fetchLiveSettings(),
+      ]);
 
       setProducts(p);
       setArticles(a);
@@ -193,25 +195,26 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
         map[item.key] = item.value;
       });
       setSettingsForm(map);
-    } catch (err) {
-      console.error('Error loading store data:', err);
+    } catch (err: unknown) {
+      console.error('Error loading live store data from Supabase:', err);
+      const msg = err instanceof Error ? err.message : 'Failed to sync with Supabase cloud.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (session || demoMode) {
+    if (session) {
       refreshAllData();
     }
-  }, [session, demoMode, refreshAllData]);
+  }, [session, refreshAllData]);
 
   const handleLogout = async () => {
-    if (isSupabaseConfigured) {
-      await supabase.auth.signOut().catch(() => {});
-    }
+    try {
+      await supabase.auth.signOut();
+    } catch {}
     setSession(null);
-    setDemoMode(false);
     onExit();
   };
 
@@ -407,8 +410,8 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
     );
   }
 
-  if (!session && !demoMode) {
-    return <AdminLogin onExit={onExit} onDemoLogin={() => setDemoMode(true)} />;
+  if (!session) {
+    return <AdminLogin onExit={onExit} />;
   }
 
   const filteredProducts = products.filter(
@@ -1519,43 +1522,44 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
 }
 
 // Admin Login Screen Component
-function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: () => void }) {
+function AdminLogin({ onExit }: { onExit: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAdminSignIn = async (emailToUse: string, passToUse: string) => {
     setError(null);
     setLoading(true);
 
-    if (isSupabaseConfigured) {
-      const { error: err } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    try {
+      const { data, error: err } = await supabase.auth.signInWithPassword({
+        email: emailToUse.trim(),
+        password: passToUse,
+      });
+
       if (err) {
-        // If Supabase returned invalid login but matched owner credentials in demo fallback
-        if (
-          email.trim().toLowerCase() === 'harshvardhansinghdhakad@gmail.com' &&
-          password === 'TheStyleRoom@7811'
-        ) {
-          onDemoLogin();
-        } else {
-          setError(err.message);
-        }
+        setError(err.message);
+      } else if (!data.session) {
+        setError('Login session could not be established. Please try again.');
       }
-    } else {
-      if (
-        (email.trim().toLowerCase() === 'harshvardhansinghdhakad@gmail.com' &&
-          password === 'TheStyleRoom@7811') ||
-        email.toLowerCase().includes('admin') ||
-        password.length >= 6
-      ) {
-        onDemoLogin();
-      } else {
-        setError('Invalid credentials. Use harshvardhansinghdhakad@gmail.com or 1-Click Instant Enter.');
-      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Authentication failed';
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleAdminSignIn(email, password);
+  };
+
+  const handleQuickSuperAdminLogin = async () => {
+    setEmail('harshvardhansinghdhakad@gmail.com');
+    setPassword('TheStyleRoom@7811');
+    await handleAdminSignIn('harshvardhansinghdhakad@gmail.com', 'TheStyleRoom@7811');
   };
 
   return (
@@ -1566,16 +1570,17 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
             <Lock size={22} />
           </div>
           <h2 className="font-serif text-2xl font-bold text-charcoal-900">Atelier Admin Portal</h2>
-          <p className="text-xs text-charcoal-500 mt-1">Management console for products, blogs, orders & clients</p>
+          <p className="text-xs text-charcoal-500 mt-1">Real-time management console for products, blogs, orders & clients</p>
         </div>
 
-        {/* Instant Access Button */}
+        {/* Real Direct Super Admin Login Button */}
         <button
-          onClick={onDemoLogin}
-          className="w-full py-3.5 bg-[#67349a] hover:bg-[#54297f] text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95"
+          onClick={handleQuickSuperAdminLogin}
+          disabled={loading}
+          className="w-full py-3.5 bg-[#67349a] hover:bg-[#54297f] text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
         >
           <Sparkles size={15} />
-          <span>1-Click Instant Admin Access (Direct Enter)</span>
+          <span>{loading ? 'Authenticating with Supabase...' : '1-Click Super Admin Login'}</span>
         </button>
 
         {/* Helpful Default Credentials Box */}
