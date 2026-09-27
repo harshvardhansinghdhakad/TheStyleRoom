@@ -1562,15 +1562,40 @@ function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: 
           className="w-full py-3.5 bg-[#67349a] hover:bg-[#54297f] text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95"
         >
           <Sparkles size={15} />
-          <span>Instant Full Admin Access (Test All Features)</span>
+          <span>1-Click Instant Admin Access (Direct Enter)</span>
         </button>
 
-        <div className="relative my-4">
+        {/* Helpful Default Credentials Box */}
+        <div className="p-3.5 bg-purple-50 rounded-2xl border border-purple-100 text-left space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#67349a]">
+              Admin Credentials
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('admin@the-style-room.vercel.app');
+                setPassword('admin123');
+              }}
+              className="text-[10px] font-bold text-[#67349a] underline hover:text-[#54297f]"
+            >
+              Click to Auto-fill
+            </button>
+          </div>
+          <p className="text-[11px] text-charcoal-700 font-mono">
+            Email: <b className="text-charcoal-900">admin@the-style-room.vercel.app</b>
+          </p>
+          <p className="text-[11px] text-charcoal-700 font-mono">
+            Password: <b className="text-charcoal-900">admin123</b>
+          </p>
+        </div>
+
+        <div className="relative my-2">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-cream-200" />
           </div>
           <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider text-charcoal-400">
-            <span className="bg-white px-3">or sign in with credentials</span>
+            <span className="bg-white px-3">or sign in manually</span>
           </div>
         </div>
 
