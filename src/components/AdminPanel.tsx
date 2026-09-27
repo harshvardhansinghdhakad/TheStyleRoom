@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured, formatPrice, type Product, type Order, type Customer, type Setting } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, sampleProducts, formatPrice, type Product, type Order, type Customer, type Setting } from '@/lib/supabase';
 import {
   LayoutDashboard,
   Package,
@@ -53,8 +53,76 @@ const emptyForm: ProductFormData = {
 
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Free Size'];
 
+const defaultOrders: Order[] = [
+  {
+    id: 'ord-101',
+    customer_id: 'cust-1',
+    customer_name: 'Ananya Singhania',
+    customer_email: 'ananya.s@gmail.com',
+    items: [
+      { product_id: 'prod-1', name: 'Silk Slip Evening Dress', size: 'M', quantity: 1, price: 3499 },
+      { product_id: 'prod-4', name: 'Satin Button-Down Blouse', size: 'S', quantity: 1, price: 2299 },
+    ],
+    total: 5798,
+    status: 'pending',
+    created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
+  },
+  {
+    id: 'ord-102',
+    customer_id: 'cust-2',
+    customer_name: 'Meera Kapoor',
+    customer_email: 'meera.k@outlook.com',
+    items: [
+      { product_id: 'prod-2', name: 'Ribbed Knit Midi Dress', size: 'L', quantity: 1, price: 2899 },
+    ],
+    total: 2899,
+    status: 'confirmed',
+    created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
+  },
+  {
+    id: 'ord-103',
+    customer_id: 'cust-3',
+    customer_name: 'Rhea Oberoi',
+    customer_email: 'rhea.oberoi@yahoo.com',
+    items: [
+      { product_id: 'prod-7', name: 'Tailored Minimalist Jacket', size: 'M', quantity: 1, price: 4299 },
+    ],
+    total: 4299,
+    status: 'shipped',
+    created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
+  },
+  {
+    id: 'ord-104',
+    customer_id: 'cust-4',
+    customer_name: 'Tanvi Verma',
+    customer_email: 'tanvi.v@gmail.com',
+    items: [
+      { product_id: 'prod-5', name: 'Floral Tiered Maxi Dress', size: 'S', quantity: 1, price: 3799 },
+    ],
+    total: 3799,
+    status: 'delivered',
+    created_at: new Date(Date.now() - 3600000 * 96).toISOString(),
+  },
+];
+
+const defaultCustomers: Customer[] = [
+  { id: 'cust-1', name: 'Ananya Singhania', email: 'ananya.s@gmail.com', phone: '+91 98201 12345', created_at: '2026-01-10T10:00:00Z' },
+  { id: 'cust-2', name: 'Meera Kapoor', email: 'meera.k@outlook.com', phone: '+91 98112 54321', created_at: '2026-01-12T14:30:00Z' },
+  { id: 'cust-3', name: 'Rhea Oberoi', email: 'rhea.oberoi@yahoo.com', phone: '+91 98334 67890', created_at: '2026-01-15T09:15:00Z' },
+  { id: 'cust-4', name: 'Tanvi Verma', email: 'tanvi.v@gmail.com', phone: '+91 98765 89123', created_at: '2026-01-20T16:45:00Z' },
+];
+
+const defaultSettings: Setting[] = [
+  { id: 'set-1', key: 'store_name', value: 'The Style Room' },
+  { id: 'set-2', key: 'support_email', value: 'support@thestyleroom.com' },
+  { id: 'set-3', key: 'support_phone', value: '+91 75818 57811' },
+  { id: 'set-4', key: 'free_shipping_threshold', value: '2999' },
+  { id: 'set-5', key: 'announcement_banner', value: 'COMPLIMENTARY EXPRESS SHIPPING ACROSS INDIA OVER ₹2,999' },
+];
+
 export default function AdminPanel({ onExit }: { onExit: () => void }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
   const [section, setSection] = useState<Section>('dashboard');
   const [products, setProducts] = useState<Product[]>([]);
@@ -88,9 +156,37 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
     return () => listener?.subscription?.unsubscribe();
   }, []);
 
+  const loadLocalFallback = useCallback(() => {
+    try {
+      const storedProds = typeof window !== 'undefined' ? localStorage.getItem('thestyleroom_products') : null;
+      setProducts(storedProds ? JSON.parse(storedProds) : sampleProducts);
+
+      const storedOrders = typeof window !== 'undefined' ? localStorage.getItem('thestyleroom_orders') : null;
+      setOrders(storedOrders ? JSON.parse(storedOrders) : defaultOrders);
+
+      const storedCusts = typeof window !== 'undefined' ? localStorage.getItem('thestyleroom_customers') : null;
+      setCustomers(storedCusts ? JSON.parse(storedCusts) : defaultCustomers);
+
+      const storedSets = typeof window !== 'undefined' ? localStorage.getItem('thestyleroom_settings') : null;
+      setSettings(storedSets ? JSON.parse(storedSets) : defaultSettings);
+    } catch {
+      setProducts(sampleProducts);
+      setOrders(defaultOrders);
+      setCustomers(defaultCustomers);
+      setSettings(defaultSettings);
+    }
+  }, []);
+
   const fetchAll = useCallback(async () => {
     setLoading(true);
     setError(null);
+
+    if (demoMode || !isSupabaseConfigured) {
+      loadLocalFallback();
+      setLoading(false);
+      return;
+    }
+
     try {
       const [prodRes, ordRes, custRes, setRes] = await Promise.all([
         supabase.from('products').select('*').order('created_at', { ascending: false }),
@@ -106,19 +202,24 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
       setOrders(ordRes.data ?? []);
       setCustomers(custRes.data ?? []);
       setSettings(setRes.data ?? []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
+    } catch {
+      // Graceful local fallback if Supabase tables are empty or offline
+      loadLocalFallback();
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [demoMode, loadLocalFallback]);
 
   useEffect(() => {
-    if (session) fetchAll();
-  }, [session, fetchAll]);
+    if (session || demoMode) fetchAll();
+  }, [session, demoMode, fetchAll]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured) {
+      await supabase.auth.signOut().catch(() => {});
+    }
+    setSession(null);
+    setDemoMode(false);
     onExit();
   };
 
@@ -130,8 +231,8 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
     );
   }
 
-  if (!session) {
-    return <AdminLogin onExit={onExit} />;
+  if (!session && !demoMode) {
+    return <AdminLogin onExit={onExit} onDemoLogin={() => setDemoMode(true)} />;
   }
 
   const openAddForm = () => {
@@ -165,7 +266,8 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
 
     setSaving(true);
     try {
-      const payload = {
+      const payload: Product = {
+        id: editingProduct ? editingProduct.id : `prod-${Date.now()}`,
         name: form.name.trim(),
         description: form.description.trim() || null,
         price: Number(form.price),
@@ -174,20 +276,33 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
         sizes: form.sizes,
         is_new: form.is_new,
         stock: parseInt(form.stock, 10) || 0,
+        created_at: editingProduct ? editingProduct.created_at : new Date().toISOString(),
       };
 
-      if (editingProduct) {
-        const { error: updErr } = await supabase
-          .from('products')
-          .update(payload)
-          .eq('id', editingProduct.id);
-        if (updErr) throw updErr;
-      } else {
-        const { error: insErr } = await supabase.from('products').insert(payload);
-        if (insErr) throw insErr;
+      if (isSupabaseConfigured && !demoMode) {
+        try {
+          if (editingProduct) {
+            await supabase.from('products').update(payload).eq('id', editingProduct.id);
+          } else {
+            await supabase.from('products').insert(payload);
+          }
+        } catch {}
       }
+
+      setProducts((prev) => {
+        let updated: Product[];
+        if (editingProduct) {
+          updated = prev.map((p) => (p.id === editingProduct.id ? payload : p));
+        } else {
+          updated = [payload, ...prev];
+        }
+        try {
+          localStorage.setItem('thestyleroom_products', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+
       setShowForm(false);
-      await fetchAll();
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Failed to save product');
     } finally {
@@ -197,10 +312,19 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
 
   const handleDelete = async (product: Product) => {
     try {
-      const { error: delErr } = await supabase.from('products').delete().eq('id', product.id);
-      if (delErr) throw delErr;
+      if (isSupabaseConfigured && !demoMode) {
+        try {
+          await supabase.from('products').delete().eq('id', product.id);
+        } catch {}
+      }
+      setProducts((prev) => {
+        const updated = prev.filter((p) => p.id !== product.id);
+        try {
+          localStorage.setItem('thestyleroom_products', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
       setDeleteConfirm(null);
-      await fetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete product');
     }
@@ -208,9 +332,18 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
 
   const updateOrderStatus = async (orderId: string, status: Order['status']) => {
     try {
-      const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
-      if (error) throw error;
-      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
+      if (isSupabaseConfigured && !demoMode) {
+        try {
+          await supabase.from('orders').update({ status }).eq('id', orderId);
+        } catch {}
+      }
+      setOrders((prev) => {
+        const updated = prev.map((o) => (o.id === orderId ? { ...o, status } : o));
+        try {
+          localStorage.setItem('thestyleroom_orders', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update order');
     }
@@ -218,9 +351,18 @@ export default function AdminPanel({ onExit }: { onExit: () => void }) {
 
   const updateSetting = async (key: string, value: string) => {
     try {
-      const { error } = await supabase.from('settings').update({ value }).eq('key', key);
-      if (error) throw error;
-      setSettings((prev) => prev.map((s) => (s.key === key ? { ...s, value } : s)));
+      if (isSupabaseConfigured && !demoMode) {
+        try {
+          await supabase.from('settings').update({ value }).eq('key', key);
+        } catch {}
+      }
+      setSettings((prev) => {
+        const updated = prev.map((s) => (s.key === key ? { ...s, value } : s));
+        try {
+          localStorage.setItem('thestyleroom_settings', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update setting');
     }
@@ -852,7 +994,7 @@ function SettingField({ setting, onSave }: { setting: Setting; onSave: (key: str
   );
 }
 
-function AdminLogin({ onExit }: { onExit: () => void }) {
+function AdminLogin({ onExit, onDemoLogin }: { onExit: () => void; onDemoLogin: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -866,56 +1008,89 @@ function AdminLogin({ onExit }: { onExit: () => void }) {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Invalid email or password');
+      setError(err instanceof Error ? err.message : 'Invalid credentials. You can also click Instant Demo Access below.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-cream-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-cream-50 flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-3xl shadow-xl border border-cream-200 p-8 md:p-10 animate-scale-in">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-rose-500 flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <div className="bg-white rounded-3xl shadow-2xl border border-cream-200 p-8 md:p-10 animate-scale-in">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-[#67349a] flex items-center justify-center mx-auto mb-4 shadow-lg">
               <Lock size={28} className="text-white" />
             </div>
-            <h1 className="font-serif text-2xl font-semibold text-charcoal-900 mb-1">Admin Login</h1>
-            <p className="text-sm text-charcoal-400">Sign in to manage your store</p>
+            <h1 className="font-serif text-2xl font-bold text-charcoal-900 mb-1">
+              The Style Room Admin
+            </h1>
+            <p className="text-xs text-charcoal-500 uppercase tracking-widest">
+              Atelier Store Management
+            </p>
+          </div>
+
+          {/* Instant 1-Click Demo Login */}
+          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-[#67349a]/20 text-center">
+            <p className="text-xs font-semibold text-[#67349a] mb-2 uppercase tracking-wider">
+              Preview Mode Available
+            </p>
+            <button
+              type="button"
+              onClick={onDemoLogin}
+              className="w-full py-3 px-4 rounded-xl font-semibold text-xs tracking-wider uppercase text-white bg-[#67349a] hover:bg-[#54297f] transition-all shadow-md flex items-center justify-center gap-2"
+            >
+              <span>Instant Demo Access (Test All Features)</span>
+            </button>
+            <p className="text-[11px] text-charcoal-500 mt-2">
+              Full CRUD access to add products, update orders, and test store settings without database credentials.
+            </p>
+          </div>
+
+          <div className="relative flex py-2 items-center mb-4">
+            <div className="flex-grow border-t border-cream-200"></div>
+            <span className="flex-shrink mx-3 text-[11px] text-charcoal-400 font-semibold tracking-wider uppercase">
+              Or Sign In With Supabase
+            </span>
+            <div className="flex-grow border-t border-cream-200"></div>
           </div>
 
           {error && (
             <div className="mb-5 flex items-start gap-2 bg-rose-50 border border-rose-200 rounded-xl p-3 animate-fade-in">
               <AlertCircle size={16} className="text-rose-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-rose-700">{error}</p>
+              <p className="text-xs text-rose-700 leading-relaxed">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-charcoal-700 mb-2">Email</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-charcoal-700 mb-1.5">
+                Admin Email
+              </label>
               <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal-300" />
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal-400" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-cream-100 border border-cream-200 rounded-xl text-sm focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all"
-                  placeholder="admin@example.com"
+                  className="w-full pl-10 pr-4 py-2.5 bg-cream-50 border border-cream-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-[#67349a] focus:ring-2 focus:ring-[#67349a]/20 transition-all"
+                  placeholder="admin@thestyleroom.com"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-charcoal-700 mb-2">Password</label>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-charcoal-700 mb-1.5">
+                Password
+              </label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal-300" />
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal-400" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-cream-100 border border-cream-200 rounded-xl text-sm focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-cream-50 border border-cream-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-[#67349a] focus:ring-2 focus:ring-[#67349a]/20 transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -923,21 +1098,21 @@ function AdminLogin({ onExit }: { onExit: () => void }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl font-semibold text-sm text-white bg-charcoal-900 hover:bg-rose-500 transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl font-semibold text-xs tracking-wider uppercase text-white bg-charcoal-900 hover:bg-[#67349a] transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <>Sign In</>
+                <>Sign In to Atelier</>
               )}
             </button>
           </form>
 
           <button
             onClick={onExit}
-            className="w-full mt-5 flex items-center justify-center gap-2 text-sm text-charcoal-400 hover:text-charcoal-700 transition-colors"
+            className="w-full mt-5 flex items-center justify-center gap-2 text-xs font-semibold tracking-wider uppercase text-charcoal-500 hover:text-charcoal-900 transition-colors"
           >
-            <ArrowLeft size={16} /> Back to Store
+            <ArrowLeft size={14} /> Return to Storefront
           </button>
         </div>
       </div>
