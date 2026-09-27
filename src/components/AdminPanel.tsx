@@ -1556,12 +1556,6 @@ function AdminLogin({ onExit }: { onExit: () => void }) {
     await handleAdminSignIn(email, password);
   };
 
-  const handleQuickSuperAdminLogin = async () => {
-    setEmail('harshvardhansinghdhakad@gmail.com');
-    setPassword('TheStyleRoom@7811');
-    await handleAdminSignIn('harshvardhansinghdhakad@gmail.com', 'TheStyleRoom@7811');
-  };
-
   return (
     <div className="min-h-screen bg-[#140620] flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-10 max-w-md w-full border border-purple-100 space-y-6 animate-scale-in">
@@ -1570,87 +1564,49 @@ function AdminLogin({ onExit }: { onExit: () => void }) {
             <Lock size={22} />
           </div>
           <h2 className="font-serif text-2xl font-bold text-charcoal-900">Atelier Admin Portal</h2>
-          <p className="text-xs text-charcoal-500 mt-1">Real-time management console for products, blogs, orders & clients</p>
-        </div>
-
-        {/* Real Direct Super Admin Login Button */}
-        <button
-          onClick={handleQuickSuperAdminLogin}
-          disabled={loading}
-          className="w-full py-3.5 bg-[#67349a] hover:bg-[#54297f] text-white rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
-        >
-          <Sparkles size={15} />
-          <span>{loading ? 'Authenticating with Supabase...' : '1-Click Super Admin Login'}</span>
-        </button>
-
-        {/* Helpful Default Credentials Box */}
-        <div className="p-3.5 bg-purple-50 rounded-2xl border border-purple-100 text-left space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#67349a]">
-              Admin Credentials
-            </span>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('harshvardhansinghdhakad@gmail.com');
-                setPassword('TheStyleRoom@7811');
-              }}
-              className="text-[10px] font-bold text-[#67349a] underline hover:text-[#54297f]"
-            >
-              Click to Auto-fill
-            </button>
-          </div>
-          <p className="text-[11px] text-charcoal-700 font-mono">
-            Email: <b className="text-charcoal-900">harshvardhansinghdhakad@gmail.com</b>
-          </p>
-          <p className="text-[11px] text-charcoal-700 font-mono">
-            Password: <b className="text-charcoal-900">TheStyleRoom@7811</b>
-          </p>
-        </div>
-
-        <div className="relative my-2">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-cream-200" />
-          </div>
-          <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider text-charcoal-400">
-            <span className="bg-white px-3">or sign in manually</span>
-          </div>
+          <p className="text-xs text-charcoal-500 mt-1">Secure management console for products, blogs, orders & clients</p>
         </div>
 
         {error && (
-          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
-            <AlertCircle size={15} />
+          <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[10px] font-bold text-charcoal-700 uppercase mb-1">Admin Email</label>
+            <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wider mb-1.5">
+              Admin Email
+            </label>
             <div className="relative">
-              <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal-400" />
+              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal-400" />
               <input
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="harshvardhansinghdhakad@gmail.com"
-                className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-cream-300 focus:border-[#67349a] outline-none"
+                placeholder="Enter admin email address"
+                className="w-full pl-10 pr-3.5 py-3 text-xs rounded-xl border border-cream-300 focus:border-[#67349a] focus:ring-1 focus:ring-[#67349a] outline-none transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-charcoal-700 uppercase mb-1">Password</label>
+            <label className="block text-[11px] font-bold text-charcoal-700 uppercase tracking-wider mb-1.5">
+              Password
+            </label>
             <div className="relative">
-              <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal-400" />
+              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-charcoal-400" />
               <input
                 type="password"
                 required
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-cream-300 focus:border-[#67349a] outline-none"
+                placeholder="Enter admin password"
+                className="w-full pl-10 pr-3.5 py-3 text-xs rounded-xl border border-cream-300 focus:border-[#67349a] focus:ring-1 focus:ring-[#67349a] outline-none transition-all"
               />
             </div>
           </div>
