@@ -247,7 +247,12 @@ export default function ProductDetailView({
                     </span>
                   )}
                   <span className="bg-white/90 backdrop-blur-md text-[#67349a] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md shadow-sm">
-                    {product.category === 'dresses' ? 'SILK & SATIN EDIT' : 'CURATED CAPSULE'}
+                    {(product.name + ' ' + (product.description || '')).toLowerCase().includes('silk') ||
+                     (product.name + ' ' + (product.description || '')).toLowerCase().includes('satin')
+                      ? 'SILK & SATIN EDIT'
+                      : product.category === 'dresses'
+                        ? 'COUTURE EDIT'
+                        : 'CURATED CAPSULE'}
                   </span>
                 </div>
               </div>
@@ -457,8 +462,16 @@ export default function ProductDetailView({
                 </div>
                 <div className="flex flex-col items-center text-center p-2 rounded-xl bg-white border border-cream-200">
                   <ShieldCheck size={17} className="text-[#67349a] mb-1" />
-                  <span className="font-bold">100% Luxury</span>
-                  <span className="text-[10px] text-charcoal-400">Certified Silk</span>
+                  <span className="font-bold">100% Authentic</span>
+                  <span className="text-[10px] text-charcoal-400">
+                    {(product.name + ' ' + (product.description || '')).toLowerCase().includes('silk')
+                      ? 'Certified Silk'
+                      : (product.name + ' ' + (product.description || '')).toLowerCase().includes('linen')
+                        ? 'Premium Linen'
+                        : (product.name + ' ' + (product.description || '')).toLowerCase().includes('cotton')
+                          ? 'Organic Cotton'
+                          : 'Artisan Craft'}
+                  </span>
                 </div>
               </div>
 
@@ -495,7 +508,7 @@ export default function ProductDetailView({
       </div>
 
       {/* STICKY BOTTOM BAR FOR MOBILE PHONES */}
-      <div className="md:hidden fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-cream-200 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
+      <div className="md:hidden fixed bottom-[60px] left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-cream-200 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
         <div className="flex flex-col">
           <span className="text-[10px] text-charcoal-500 uppercase tracking-wider">Price (Size {selectedSize})</span>
           <span className="font-serif text-lg font-bold text-[#67349a]">{formatPrice(product.price * quantity)}</span>

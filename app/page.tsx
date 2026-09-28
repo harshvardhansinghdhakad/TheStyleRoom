@@ -50,7 +50,7 @@ export default function HomePage() {
       <Hero />
 
       {/* Curated Collection Section */}
-      <section className="px-3 sm:px-6 lg:px-8 py-10 md:py-16 max-w-7xl mx-auto w-full">
+      <section className="px-4 sm:px-6 lg:px-8 py-12 md:py-16 max-w-7xl mx-auto w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-[#67349a] bg-purple-50 px-3.5 py-1.5 rounded-full mb-2">
@@ -148,7 +148,7 @@ export default function HomePage() {
 
       {/* Style Journal Teaser Section */}
       <section className="py-12 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.25em] text-[#67349a] bg-purple-50 px-3.5 py-1.5 rounded-full mb-2">
               <BookOpen size={12} />

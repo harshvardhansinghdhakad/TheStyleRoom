@@ -14,6 +14,9 @@
   --lav: #f1eaff;
   --paper: #fbfaff;
   --line: #e9e2f1;
+  --section-gap: clamp(48px, 8vw, 80px);
+  --content-max: 1200px;
+  --content-px: clamp(16px, 4vw, 32px);
 }
 
 html {
@@ -57,11 +60,11 @@ img {
 }
 
 .fashion-shell {
-  max-width: 1200px;
+  max-width: var(--content-max);
   width: 100%;
   margin: 0 auto;
-  padding-left: clamp(14px, 3.5vw, 28px);
-  padding-right: clamp(14px, 3.5vw, 28px);
+  padding-left: var(--content-px);
+  padding-right: var(--content-px);
 }
 
 /* Hero Poster Banner */
@@ -105,24 +108,24 @@ img {
 
 /* Section styling with fluid responsive widths */
 .showcase-section, .arrivals-section {
-  max-width: 1200px;
+  max-width: var(--content-max);
   width: 100%;
   margin: 0 auto;
-  padding: 60px clamp(14px, 3.5vw, 28px) 30px;
+  padding: var(--section-gap) var(--content-px) calc(var(--section-gap) * 0.5);
 }
 
 .section-heading-row {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   gap: 16px;
   flex-wrap: wrap;
 }
 
 .section-heading-row h2, .arrivals-title h2 {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(26px, 4vw, 36px);
+  font-size: clamp(24px, 4vw, 36px);
   letter-spacing: -0.03em;
   margin: 6px 0 0;
   color: #1a0f26;
@@ -155,6 +158,8 @@ img {
   width: 100%;
 }
 
+/* Category Card — rely on Tailwind inline classes for overlay/copy placement,
+   keep only structural CSS here to avoid conflicts */
 .category-card {
   position: relative;
   min-height: 290px;
@@ -178,66 +183,12 @@ img {
   transform: scale(1.05);
 }
 
-.category-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(243, 235, 250, 0.94) 0%, rgba(235, 222, 247, 0.5) 60%, rgba(79, 35, 112, 0) 100%);
-}
-
-.category-copy {
-  position: absolute;
-  left: 24px;
-  top: 24px;
-  color: #302040;
-}
-
-.category-copy p {
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  margin: 0 0 6px;
-  font-weight: 700;
-  color: #67349a;
-}
-
-.category-copy h3 {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(24px, 3.5vw, 32px);
-  margin: 0 0 4px;
-  font-weight: 700;
-  color: #211233;
-}
-
-.category-copy span {
-  display: block;
-  max-width: 180px;
-  font-size: 13px;
-  color: #5f5169;
-}
-
-.category-copy b {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #62308f;
-  color: #fff;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 11px;
-  margin-top: 16px;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.category-copy b:hover {
-  background: #4e2175;
-}
-
 /* Arrival Banner */
 .arrival-banner {
-  max-width: 1200px;
-  width: calc(100% - clamp(24px, 5vw, 48px));
+  max-width: var(--content-max);
+  width: calc(100% - var(--content-px) * 2);
   min-height: 280px;
-  margin: 30px auto;
+  margin: 24px auto;
   border-radius: 24px;
   overflow: hidden;
   position: relative;
@@ -262,7 +213,7 @@ img {
 .arrival-copy {
   position: absolute;
   z-index: 2;
-  left: clamp(24px, 6vw, 60px);
+  left: var(--content-px);
   top: 50%;
   transform: translateY(-50%);
   color: #fff;
@@ -279,8 +230,8 @@ img {
 
 .arrival-copy h2 {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(28px, 4.5vw, 42px);
-  line-height: 1.05;
+  font-size: clamp(26px, 4.5vw, 42px);
+  line-height: 1.08;
   margin: 0 0 18px;
   font-weight: 700;
 }
@@ -311,7 +262,11 @@ img {
 
 /* Arrival Grid */
 .arrivals-section {
-  padding-top: 50px;
+  padding-top: calc(var(--section-gap) * 0.7);
+}
+
+.arrivals-title {
+  margin-bottom: 24px;
 }
 
 .arrival-grid {
@@ -329,6 +284,11 @@ img {
   overflow: hidden;
   background: #d9c8e8;
   text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.arrival-card:hover {
+  transform: translateY(-4px);
 }
 
 .arrival-card img {
@@ -347,7 +307,8 @@ img {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(60, 21, 85, 0) 50%, rgba(36, 16, 43, 0.85));
+  background: linear-gradient(180deg, rgba(60, 21, 85, 0) 40%, rgba(36, 16, 43, 0.85));
+  pointer-events: none;
 }
 
 .arrival-card span {
@@ -357,7 +318,7 @@ img {
   left: 16px;
   color: #fff;
   font-family: 'Outfit', sans-serif;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-weight: 600;
 }
 
@@ -366,8 +327,8 @@ img {
   z-index: 3;
   top: 12px;
   right: 12px;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: #fff;
   color: #4b1f6d;
@@ -375,15 +336,21 @@ img {
   place-items: center;
   font-style: normal;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s, color 0.2s;
+}
+
+.arrival-card:hover i {
+  background: #67349a;
+  color: #fff;
 }
 
 /* Benefit Strip */
 .benefit-strip {
-  max-width: 1200px;
-  width: calc(100% - clamp(24px, 5vw, 48px));
-  margin: 28px auto 60px;
+  max-width: var(--content-max);
+  width: calc(100% - var(--content-px) * 2);
+  margin: 24px auto calc(var(--section-gap) * 0.75);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -393,7 +360,7 @@ img {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 22px 10px;
+  padding: 20px 10px;
   border-right: 1px solid var(--line);
   font-size: 12px;
   text-align: center;
@@ -406,7 +373,7 @@ img {
 .benefit-strip svg {
   width: 20px;
   color: #67349a;
-  shrink: 0;
+  flex-shrink: 0;
 }
 
 .benefit-strip b {
@@ -419,18 +386,67 @@ img {
   color: #766a7d;
 }
 
+/* Safe area padding for bottom nav on iOS */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Responsive Overrides */
-@media (max-width: 767px) {
-  .arrival-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+@media (max-width: 1023px) {
   .benefit-strip {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   .benefit-strip > div:nth-child(2) {
     border-right: 0;
   }
   .benefit-strip > div:nth-child(-n+2) {
     border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --section-gap: 40px;
+  }
+
+  .hero-card {
+    min-height: 480px;
+    border-radius: 20px;
+  }
+
+  .category-card {
+    min-height: 240px;
+  }
+
+  .arrival-banner {
+    min-height: 240px;
+  }
+
+  .arrival-card {
+    min-height: 200px;
+  }
+
+  .benefit-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .benefit-strip > div {
+    padding: 16px 8px;
+    font-size: 11px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 374px) {
+  .benefit-strip {
+    grid-template-columns: 1fr;
+  }
+  .benefit-strip > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .benefit-strip > div:last-child {
+    border-bottom: 0;
   }
 }

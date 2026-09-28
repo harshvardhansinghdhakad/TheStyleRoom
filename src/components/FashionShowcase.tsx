@@ -4,7 +4,7 @@ import { ArrowUpRight, Globe2, Heart, Star, Sparkles } from 'lucide-react';
 
 const cards = [
   {
-    title: 'Women’s Silk Slips & Dresses',
+    title: 'Women\u2019s Silk Slips & Dresses',
     kicker: 'EFFORTLESS COUTURE',
     desc: 'Bias-cut mulberry silks crafted for all moments',
     image: '/images/category_jacket.jpg',
@@ -21,7 +21,7 @@ const cards = [
 
 const arrivals = [
   { title: 'Mulberry Silks', image: '/images/category_jacket.jpg', href: '/category/dresses' },
-  { title: 'Linen Resorwear', image: '/images/category_pants.jpg', href: '/category/tops' },
+  { title: 'Linen Resortwear', image: '/images/category_pants.jpg', href: '/category/tops' },
   { title: 'Atelier Accents', image: '/images/arrival_sunglasses.jpg', href: '/shop' },
   { title: 'Signature Footwear', image: '/images/arrival_footwear.jpg', href: '/shop' },
 ];
@@ -39,7 +39,7 @@ export default function FashionShowcase() {
             </p>
             <h2>Curated for Every Moment</h2>
           </div>
-          <Link href="/shop" className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#67349a] hover:underline">
+          <Link href="/shop" className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#67349a] hover:underline uppercase tracking-wider">
             View All Pieces <ArrowUpRight size={16} />
           </Link>
         </div>
@@ -49,15 +49,15 @@ export default function FashionShowcase() {
             <Link
               key={card.title}
               href={card.href}
-              className="category-card group block relative min-h-[300px] sm:min-h-[340px] rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
+              className="group block relative min-h-[300px] sm:min-h-[360px] rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
             >
               <img
                 src={card.image}
                 alt={card.title}
-                className="w-full h-full object-cover filter saturate-85 group-hover:scale-105 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-cover filter saturate-[0.85] group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="category-overlay absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-[#220c33]/90 via-[#220c33]/60 to-transparent" />
-              <div className="category-copy absolute left-6 bottom-6 sm:top-8 sm:bottom-auto text-white">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#220c33]/90 via-[#220c33]/50 to-transparent sm:bg-gradient-to-r sm:from-[#220c33]/90 sm:via-[#220c33]/60 sm:to-transparent" />
+              <div className="absolute z-10 left-6 bottom-6 sm:left-8 sm:top-8 sm:bottom-auto text-white max-w-[260px]">
                 <p className="text-[10px] font-bold tracking-[0.25em] text-[#deb6ff] uppercase mb-1.5">
                   {card.kicker}
                 </p>
@@ -101,12 +101,12 @@ export default function FashionShowcase() {
         </div>
       </section>
 
-      {/* Arrival Grid Showcase */}
+      {/* Trending Edits Grid Showcase */}
       <section className="arrivals-section">
-        <div className="arrivals-title mb-6">
+        <div className="arrivals-title mb-8">
           <p className="purple-eyebrow">SPRING ATELIER PICKS</p>
           <h2>Trending Edits</h2>
-          <p className="text-charcoal-500 text-xs sm:text-sm">Silhouettes crafted for modern presence, fluid motion, and enduring ease.</p>
+          <p className="text-charcoal-500 text-xs sm:text-sm mt-1">Silhouettes crafted for modern presence, fluid motion, and enduring ease.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 w-full">
           {arrivals.map((item) => (
@@ -118,12 +118,12 @@ export default function FashionShowcase() {
               <img
                 src={item.image}
                 alt={item.title}
-                className="w-full h-full object-cover filter saturate-85 group-hover:scale-106 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover filter saturate-[0.85] group-hover:scale-[1.06] transition-transform duration-500"
               />
-              <span className="absolute z-10 bottom-3.5 left-3.5 text-white font-serif text-base sm:text-xl font-bold">
+              <span className="absolute z-10 bottom-3.5 left-3.5 text-white font-serif text-base sm:text-xl font-bold drop-shadow-lg">
                 {item.title}
               </span>
-              <i className="absolute z-10 top-3 right-3 w-8 h-8 rounded-full bg-white text-[#4b1f6d] flex items-center justify-center shadow-md group-hover:bg-[#67349a] group-hover:text-white transition-colors">
+              <i className="absolute z-10 top-3 right-3 w-8 h-8 rounded-full bg-white text-[#4b1f6d] flex items-center justify-center shadow-md group-hover:bg-[#67349a] group-hover:text-white transition-colors not-italic">
                 <ArrowUpRight size={16} />
               </i>
             </Link>

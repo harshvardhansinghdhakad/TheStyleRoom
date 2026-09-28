@@ -218,10 +218,10 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#9b88a8]">
         <p>© {new Date().getFullYear()} The Style Room. All rights reserved.</p>
         <div className="flex items-center gap-6">
-          <Link href="/about" className="hover:text-white transition-colors">
+          <Link href="/contact#faq" className="hover:text-white transition-colors">
             Privacy Policy
           </Link>
-          <Link href="/about" className="hover:text-white transition-colors">
+          <Link href="/contact#faq" className="hover:text-white transition-colors">
             Terms of Service
           </Link>
           <Link href="/contact" className="hover:text-white transition-colors">
