@@ -147,17 +147,19 @@ export default function Header() {
                 </button>
               )}
 
-              {/* Contact Us CTA Button */}
+              {/* Contact Us Link */}
               <Link
                 href="/contact"
-                className={`hidden sm:inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider uppercase transition-all shadow-sm ${
+                className={`hidden sm:inline-flex relative py-2 text-[11px] xl:text-xs font-semibold tracking-wider uppercase transition-colors whitespace-nowrap ${
                   pathname === '/contact'
-                    ? 'bg-[#54297f] text-white shadow-md'
-                    : 'bg-[#67349a] hover:bg-[#54297f] text-white hover:shadow-md'
+                    ? 'text-[#67349a]'
+                    : 'text-charcoal-700 hover:text-[#67349a]'
                 }`}
               >
-                <span>Concierge</span>
-                <ArrowRight size={13} />
+                Contact
+                {pathname === '/contact' && (
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#67349a] rounded-full animate-fade-in" />
+                )}
               </Link>
 
               {/* Mobile Menu Hamburger */}

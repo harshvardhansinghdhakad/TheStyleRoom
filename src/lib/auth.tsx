@@ -167,7 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const openAccountDrawer = useCallback(() => setAccountDrawerOpen(true), []);
   const closeAccountDrawer = useCallback(() => setAccountDrawerOpen(false), []);
 
-  // Sign Up with real Supabase Auth
+  // Sign Up using server-side API for auto-confirm, then sign in for session
   const signUp = useCallback(
     async (email: string, pass: string, name: string, phone: string) => {
       try {
@@ -179,35 +179,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return { success: false, error: 'Password must be at least 6 characters long' };
         }
 
-        const { data, error } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password: pass,
-          options: {
-            data: {
-              full_name: name.trim(),
-              phone: phone.trim(),
-            },
-          },
+        // Step 1: Create & auto-confirm user via server-side API
+        const signupRes = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: cleanEmail,
+            password: pass,
+            name: name.trim(),
+            phone: phone.trim(),
+          }),
         });
 
-        if (error) {
-          return { success: false, error: error.message };
+        const signupData = await signupRes.json();
+
+        if (!signupRes.ok || signupData.error) {
+          return { success: false, error: signupData.error || 'Registration failed' };
         }
 
-        const registeredUser = data.user;
-        if (registeredUser) {
+        // Step 2: Now sign in client-side to get a real session
+        const { data: signInData, error: signInError } =
+          await supabase.auth.signInWithPassword({
+            email: cleanEmail,
+            password: pass,
+          });
+
+        if (signInError) {
+          // Account was created but auto-sign-in failed
+          return {
+            success: false,
+            error: `Account created but sign-in failed: ${signInError.message}. Please try signing in manually.`,
+          };
+        }
+
+        if (signInData.user) {
           const newUser: AppUser = {
-            id: registeredUser.id,
+            id: signInData.user.id,
             email: cleanEmail,
             name: name.trim() || cleanEmail.split('@')[0],
             phone: phone.trim() || undefined,
             addresses: [],
-            createdAt: registeredUser.created_at || new Date().toISOString(),
+            createdAt: signInData.user.created_at || new Date().toISOString(),
             lastLoginAt: new Date().toISOString(),
             authProvider: 'email',
           };
 
           setUser(newUser);
+          setSession(signInData.session);
           trackUserLoginEvent();
 
           // Save customer profile to Supabase database
