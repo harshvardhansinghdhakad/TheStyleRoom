@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, ShoppingBag, X, ArrowRight, Shield, Sparkles, User as UserIcon } from 'lucide-react';
+import { Search, ShoppingBag, X, ArrowRight, Shield, Sparkles, User as UserIcon, Image as ImageIcon } from 'lucide-react';
 import { useCart } from '@/lib/cart';
 import { useAuth } from '@/lib/auth';
 import SearchModal from '@/components/SearchModal';
@@ -146,6 +146,16 @@ export default function Header() {
                   <span className="hidden sm:inline">Sign In</span>
                 </button>
               )}
+
+              {/* Gallery Link */}
+              <Link
+                href="/gallery"
+                className="p-2 sm:p-2.5 rounded-full text-charcoal-700 hover:text-[#67349a] hover:bg-purple-50 transition-all"
+                aria-label="View Gallery"
+                title="View Gallery"
+              >
+                <ImageIcon size={19} />
+              </Link>
 
               {/* Contact Us Link */}
               <Link
